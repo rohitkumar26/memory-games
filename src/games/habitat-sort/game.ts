@@ -153,19 +153,20 @@ export default {
     const diffRow = this.api.createElement('div', ['flex', 'gap-2', 'flex-wrap', 'justify-center']);
     DIFFICULTY_CONFIG.forEach((config, idx) => {
       const level = idx + 1;
-      const btn = this.api.createElement('button', [
-        'px-4', 'py-2.5', 'rounded-2xl', 'font-bold', 'text-sm', 'transition-all',
-        'border-3', 'cursor-pointer'
+      const btn = this.api!.createElement('button', [
+        'w-12', 'h-12', 'rounded-xl', 'font-black', 'text-lg', 'transition-all',
+        'border-3', 'cursor-pointer', 'flex', 'items-center', 'justify-center'
       ]);
-      btn.textContent = `Level ${level}: ${config.label}`;
+      btn.textContent = String(level);
+      btn.title = config.label;
 
       if (level === this.currentLevel) {
-        btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-700', 'scale-105', 'shadow-lg');
+        btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-700', 'scale-110', 'shadow-lg');
       } else {
-        btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200', 'hover:border-emerald-400');
+        btn.classList.add('bg-white', 'text-gray-500', 'border-gray-200', 'hover:border-emerald-400');
       }
 
-      this.api.onTap(btn, () => {
+      this.api!.onTap(btn, () => {
         this.currentLevel = level;
         this.api?.playSound('click');
         this.buildMenu();
@@ -237,8 +238,10 @@ export default {
     this.score = new Score(this.api);
     header.appendChild(this.score.element);
 
+    this.isPlaying = true;
     this.timer = new Timer(this.api);
     header.appendChild(this.timer.element);
+    this.timer.start();
 
     this.container.appendChild(header);
 

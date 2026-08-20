@@ -207,8 +207,10 @@ export default {
     this.score = new Score(this.api);
     header.appendChild(this.score.element);
 
+    this.isPlaying = true;
     this.timer = new Timer(this.api);
     header.appendChild(this.timer.element);
+    this.timer.start();
 
     this.container.appendChild(header);
 
