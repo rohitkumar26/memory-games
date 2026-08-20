@@ -1,0 +1,130 @@
+---
+import GameShell from '../layouts/GameShell.astro';
+
+// Auto-discover all games
+const gameModules = import.meta.glob('../games/*/manifest.json', { eager: true });
+
+const games = Object.entries(gameModules).map(([path, mod]) => {
+  const manifest = (mod as any).default;
+  return {
+    ...manifest,
+    path: path.replace('../games/', '').replace('/manifest.json', '')
+  };
+});
+
+const categoryColors: Record<string, string> = {
+  'visual-spatial': 'from-pink-400 to-rose-400',
+  'sequence-recall': 'from-blue-400 to-cyan-400',
+  'pattern-completion': 'from-green-400 to-emerald-400',
+  'category-sorting': 'from-yellow-400 to-orange-400',
+  'object-recall': 'from-purple-400 to-violet-400',
+};
+
+const gameIcons: Record<string, string> = {
+  'memory-match': '🧠',
+  'simon-says': '🚦',
+  'shadow-matching': '🌓',
+  'category-sorting': '🧺',
+};
+---
+
+<GameShell title="🧠 Kids Memory Games — Fun & Free!">
+  <main class="min-h-screen flex flex-col items-center px-4 py-8 relative">
+    <!-- Sound Toggle Top Right -->
+    <div class="w-full max-w-5xl flex justify-end mb-2">
+      <button
+        id="home-sound-btn"
+        class="px-4 py-2 bg-white/80 hover:bg-white text-purple-700 rounded-2xl text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
+        title="Toggle Sound"
+        aria-label="Toggle Sound"
+      >
+        <span id="home-sound-icon">🔊</span>
+        <span>Sound</span>
+      </button>
+    </div>
+
+    <!-- Hero -->
+    <div class="text-center mb-12 animate-float">
+      <h1 class="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-kid-purple via-kid-pink to-kid-orange mb-4">
+        🧠 Memory Games
+      </h1>
+      <p class="text-xl text-gray-500 max-w-lg mx-auto">
+        Train your brain with fun, colorful games! No ads, no tracking, just play.
+      </p>
+      <div class="mt-4 flex gap-2 justify-center flex-wrap">
+        <span class="px-3 py-1 bg-kid-green/20 text-kid-green rounded-full text-sm font-bold">✅ Free Forever</span>
+        <span class="px-3 py-1 bg-kid-blue/20 text-kid-blue rounded-full text-sm font-bold">🔒 No Tracking</span>
+        <span class="px-3 py-1 bg-kid-purple/20 text-kid-purple rounded-full text-sm font-bold">👶 Ages 3-10</span>
+      </div>
+    </div>
+
+    <!-- Game Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
+      {games.map((game) => (
+        <a 
+          href={`/play/${game.id}`}
+          class="group relative bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 border-4 border-transparent hover:border-kid-purple/20 flex flex-col justify-between"
+        >
+          <div class={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${categoryColors[game.category] || 'from-gray-400 to-gray-500'} rounded-t-3xl`} />
+
+          <div>
+            <div class="flex items-start justify-between mb-3">
+              <span class="text-4xl">{gameIcons[game.id] || '🎮'}</span>
+              <span class="px-3 py-1 bg-gray-100 rounded-full text-xs font-bold text-gray-500">
+                Ages {game.ageRange.min}-{game.ageRange.max}
+              </span>
+            </div>
+
+            <h2 class="text-2xl font-black text-gray-800 mb-2 group-hover:text-kid-purple transition-colors">
+              {game.name}
+            </h2>
+
+            <p class="text-gray-500 text-sm mb-4 line-clamp-2">
+              {game.description}
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between mt-auto">
+            <div class="flex gap-1">
+              {Array.from({ length: game.difficulty.max }).map((_, i) => (
+                <span class={`text-lg ${i < game.difficulty.default ? 'opacity-100' : 'opacity-20'}`}>⭐</span>
+              ))}
+            </div>
+            <span class="px-4 py-2 bg-kid-purple text-white rounded-xl font-bold text-sm group-hover:bg-kid-pink transition-colors">
+              Play →
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 text-center text-gray-400 text-sm">
+      <p>Made with 💜 for kids everywhere. No ads. No tracking. Just fun.</p>
+      <p class="mt-2">Open source. Parent-friendly. Privacy-first.</p>
+    </footer>
+  </main>
+
+  <script>
+    import { globalAudio } from '../core/audio';
+
+    const soundBtn = document.getElementById('home-sound-btn');
+    const soundIcon = document.getElementById('home-sound-icon');
+
+    const updateSoundIcon = () => {
+      if (soundIcon) {
+        soundIcon.textContent = globalAudio.isAudioMuted() ? '🔇' : '🔊';
+      }
+    };
+
+    updateSoundIcon();
+
+    soundBtn?.addEventListener('click', () => {
+      globalAudio.unlock();
+      globalAudio.toggleMute();
+      updateSoundIcon();
+    });
+
+    window.addEventListener('audiomutestatuschange', updateSoundIcon);
+  </script>
+</GameShell>

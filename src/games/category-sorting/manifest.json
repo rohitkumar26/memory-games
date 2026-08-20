@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schemas/game-manifest.json",
+  "id": "category-sorting",
+  "name": "Category Sorting",
+  "description": "Sort colorful items into their correct category boxes! Animals vs Foods, Vehicles vs Space, and more!",
+  "version": "1.0.0",
+  "engine": "dom-engine",
+  "category": "category-sorting",
+  "difficulty": {
+    "min": 1,
+    "max": 5,
+    "default": 1
+  },
+  "ageRange": {
+    "min": 4,
+    "max": 10
+  },
+  "assets": {
+    "images": [],
+    "sounds": [],
+    "fonts": [],
+    "videos": []
+  },
+  "settings": {
+    "buckets": 2
+  }
+}

@@ -1,0 +1,93 @@
+---
+import GameShell from '../../layouts/GameShell.astro';
+
+export function getStaticPaths() {
+  const manifests = import.meta.glob('../../games/*/manifest.json', { eager: true });
+
+  return Object.entries(manifests).map(([path, mod]) => {
+    const manifest = (mod as any).default;
+    const gameId = path.replace('../../games/', '').replace('/manifest.json', '');
+    return {
+      params: { game: gameId },
+      props: { manifest }
+    };
+  });
+}
+
+const { game } = Astro.params;
+const { manifest } = Astro.props;
+---
+
+<GameShell title={`Play ${manifest.name}`} description={manifest.description}>
+  <div class="min-h-screen flex flex-col">
+    <!-- Top bar -->
+    <nav class="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur sticky top-0 z-30 shadow-sm">
+      <a 
+        href="/" 
+        class="flex items-center gap-2 text-gray-600 hover:text-kid-purple transition font-bold"
+      >
+        <span class="text-xl">←</span>
+        <span class="hidden sm:inline">All Games</span>
+      </a>
+      <h1 class="text-lg font-black text-gray-700">{manifest.name}</h1>
+      <div class="flex items-center justify-end w-20">
+        <button
+          id="sound-toggle-btn"
+          class="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-2xl text-lg font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center"
+          title="Toggle Sound"
+          aria-label="Toggle Sound"
+        >
+          <span id="sound-icon">🔊</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Game viewport -->
+    <div id="game-root" class="flex-1" data-game-id={game}></div>
+  </div>
+
+  <script>
+    import '../../engines/dom-engine/engine.ts';
+    import { globalAudio } from '../../core/audio';
+
+    // Handle sound toggle
+    const soundBtn = document.getElementById('sound-toggle-btn');
+    const soundIcon = document.getElementById('sound-icon');
+
+    const updateSoundIcon = () => {
+      if (soundIcon) {
+        soundIcon.textContent = globalAudio.isAudioMuted() ? '🔇' : '🔊';
+      }
+    };
+
+    updateSoundIcon();
+
+    soundBtn?.addEventListener('click', () => {
+      globalAudio.unlock();
+      globalAudio.toggleMute();
+      updateSoundIcon();
+    });
+
+    window.addEventListener('audiomutestatuschange', updateSoundIcon);
+
+    // Unlock audio context on first interaction
+    let audioUnlocked = false;
+    const unlockAudio = () => {
+      if (!audioUnlocked) {
+        globalAudio.unlock();
+        audioUnlocked = true;
+      }
+    };
+    document.addEventListener('click', unlockAudio, { once: true });
+    document.addEventListener('touchstart', unlockAudio, { once: true });
+
+    // Mount and load game
+    const gameId = document.getElementById('game-root')?.dataset.gameId;
+    if (gameId && (window as any).GameEngine) {
+      (window as any).GameEngine.mount('game-root');
+      (window as any).GameEngine.load(gameId).then(() => {
+        (window as any).GameEngine.start();
+      });
+    }
+  </script>
+</GameShell>

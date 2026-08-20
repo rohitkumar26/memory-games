@@ -1,0 +1,29 @@
+{
+  "$schema": "../../schemas/game-manifest.json",
+  "id": "memory-match",
+  "name": "Memory Match",
+  "description": "Flip cards to find matching pairs! A classic memory game with colorful animals, fruits, and space themes.",
+  "version": "1.0.0",
+  "engine": "dom-engine",
+  "category": "visual-spatial",
+  "difficulty": {
+    "min": 1,
+    "max": 5,
+    "default": 1
+  },
+  "ageRange": {
+    "min": 3,
+    "max": 10
+  },
+  "assets": {
+    "images": [],
+    "sounds": [],
+    "fonts": [],
+    "videos": []
+  },
+  "settings": {
+    "timerEnabled": true,
+    "hintsEnabled": false,
+    "themes": ["animals", "fruits", "space", "mixed"]
+  }
+}
