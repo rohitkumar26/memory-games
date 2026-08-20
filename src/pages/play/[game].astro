@@ -263,15 +263,15 @@ const gameSchema = {
     document.addEventListener('click', unlockAudio, { once: true });
     document.addEventListener('touchstart', unlockAudio, { once: true });
 
-    // Mount and load game
+    // Mount and load game directly to its menu screen
     const gameId = document.getElementById('game-root')?.dataset.gameId;
     const urlParams = new URLSearchParams(window.location.search);
     const difficultyParam = parseInt(urlParams.get('difficulty') || urlParams.get('level') || '0', 10);
 
     if (gameId && (window as any).GameEngine) {
       (window as any).GameEngine.mount('game-root');
-      (window as any).GameEngine.load(gameId).then(() => {
-        (window as any).GameEngine.start(difficultyParam > 0 ? difficultyParam : undefined);
+      (window as any).GameEngine.load(gameId, {
+        level: difficultyParam > 0 ? difficultyParam : undefined
       });
     }
   </script>

@@ -27,7 +27,7 @@ export class DOMEngine {
     return this.currentGame;
   }
 
-  async load(gameId: string): Promise<void> {
+  async load(gameId: string, options?: { level?: number }): Promise<void> {
     if (!this.container) throw new Error('Engine not mounted. Call mount() first.');
 
     // Unload previous game if any
@@ -61,7 +61,32 @@ export class DOMEngine {
 
       this.currentGame = module.default;
 
+      const g = this.currentGame as any;
+      if (options?.level && options.level > 0) {
+        g.currentLevel = options.level;
+        if ('currentPathIdx' in g) {
+          g.currentPathIdx = Math.max(0, Math.min(options.level - 1, 4));
+        }
+        if ('currentShapeIdx' in g) {
+          g.currentShapeIdx = Math.max(0, Math.min(options.level - 1, 4));
+        }
+        if (typeof g.deserialize === 'function') {
+          g.deserialize({ version: '1.0.0', timestamp: Date.now(), data: { level: options.level, shapeIdx: options.level - 1, pathIdx: options.level - 1 } });
+        }
+      }
+
       await this.currentGame.init(this.api);
+
+      if (options?.level && typeof g.buildMenu === 'function') {
+        g.currentLevel = options.level;
+        if ('currentPathIdx' in g) {
+          g.currentPathIdx = Math.max(0, Math.min(options.level - 1, 4));
+        }
+        if ('currentShapeIdx' in g) {
+          g.currentShapeIdx = Math.max(0, Math.min(options.level - 1, 4));
+        }
+        g.buildMenu();
+      }
 
     } catch (e) {
       console.error(`Failed to load game ${gameId}:`, e);
