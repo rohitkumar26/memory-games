@@ -83,10 +83,13 @@ const { manifest } = Astro.props;
 
     // Mount and load game
     const gameId = document.getElementById('game-root')?.dataset.gameId;
+    const urlParams = new URLSearchParams(window.location.search);
+    const difficultyParam = parseInt(urlParams.get('difficulty') || urlParams.get('level') || '0', 10);
+
     if (gameId && (window as any).GameEngine) {
       (window as any).GameEngine.mount('game-root');
       (window as any).GameEngine.load(gameId).then(() => {
-        (window as any).GameEngine.start();
+        (window as any).GameEngine.start(difficultyParam > 0 ? difficultyParam : undefined);
       });
     }
   </script>

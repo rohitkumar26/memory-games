@@ -23,6 +23,10 @@ export class DOMEngine {
     this.container = el;
   }
 
+  getCurrentGame(): GameModule | null {
+    return this.currentGame;
+  }
+
   async load(gameId: string): Promise<void> {
     if (!this.container) throw new Error('Engine not mounted. Call mount() first.');
 
@@ -69,7 +73,18 @@ export class DOMEngine {
     }
   }
 
-  async start(): Promise<void> {
+  async start(level?: number): Promise<void> {
+    if (level && this.currentGame) {
+      if (typeof this.currentGame.deserialize === 'function') {
+        this.currentGame.deserialize({ version: '1.0.0', timestamp: Date.now(), data: { level } });
+      }
+      const g = this.currentGame as any;
+      if (typeof g.startGame === 'function') {
+        g.isPlaying = true;
+        g.startGame(level, g.currentTheme || g.currentPackIdx || g.currentShapeIdx || 0);
+        return;
+      }
+    }
     await this.currentGame?.start();
   }
 
