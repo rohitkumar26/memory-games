@@ -283,20 +283,20 @@ export default {
 
     // Scenes Grid Container (Side-by-side)
     const scenesContainer = this.api.createElement('div', [
-      'grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-6', 'w-full'
+      'grid', 'grid-cols-1', 'sm:grid-cols-2', 'gap-4', 'sm:gap-6', 'w-full'
     ]);
 
     // Build Left Scene
     const leftBox = this.buildSceneBox('Left Scene 🖼️', 'from-pink-50 to-purple-50', 'border-pink-200');
-    const leftGrid = this.api.createElement('div', ['grid', 'gap-2', 'p-2']);
+    const leftGrid = this.api.createElement('div', ['grid', 'gap-3', 'w-full', 'max-w-[320px]', 'aspect-square']);
     leftGrid.style.gridTemplateColumns = `repeat(${config.cols}, minmax(0, 1fr))`;
 
     this.tiles.forEach((tile, idx) => {
       const tileEl = this.api!.createElement('button', [
-        'aspect-square', 'bg-white', 'rounded-2xl', 'shadow-md', 'border-3',
-        'border-pink-100', 'flex', 'items-center', 'justify-center',
+        'aspect-square', 'w-full', 'bg-white', 'rounded-2xl', 'shadow-md', 'border-3',
+        'border-pink-200', 'flex', 'items-center', 'justify-center',
         'text-3xl', 'sm:text-4xl', 'transition-all', 'duration-200', 'cursor-pointer',
-        'hover:scale-105', 'active:scale-95', 'relative', 'overflow-hidden'
+        'hover:scale-105', 'active:scale-95', 'relative', 'select-none'
       ]);
       tileEl.textContent = tile.emojiLeft;
 
@@ -313,15 +313,15 @@ export default {
 
     // Build Right Scene
     const rightBox = this.buildSceneBox('Right Scene 🖼️', 'from-yellow-50 to-amber-50', 'border-amber-200');
-    const rightGrid = this.api.createElement('div', ['grid', 'gap-2', 'p-2']);
+    const rightGrid = this.api.createElement('div', ['grid', 'gap-3', 'w-full', 'max-w-[320px]', 'aspect-square']);
     rightGrid.style.gridTemplateColumns = `repeat(${config.cols}, minmax(0, 1fr))`;
 
     this.tiles.forEach((tile, idx) => {
       const tileEl = this.api!.createElement('button', [
-        'aspect-square', 'bg-white', 'rounded-2xl', 'shadow-md', 'border-3',
-        'border-amber-100', 'flex', 'items-center', 'justify-center',
+        'aspect-square', 'w-full', 'bg-white', 'rounded-2xl', 'shadow-md', 'border-3',
+        'border-amber-200', 'flex', 'items-center', 'justify-center',
         'text-3xl', 'sm:text-4xl', 'transition-all', 'duration-200', 'cursor-pointer',
-        'hover:scale-105', 'active:scale-95', 'relative', 'overflow-hidden'
+        'hover:scale-105', 'active:scale-95', 'relative', 'select-none'
       ]);
       tileEl.textContent = tile.emojiRight;
 
@@ -341,11 +341,11 @@ export default {
 
   buildSceneBox(title: string, bgGradient: string, border: string): HTMLElement {
     const box = this.api!.createElement('div', [
-      'bg-gradient-to-br', bgGradient, 'rounded-3xl', 'p-4', 'shadow-xl',
-      'border-4', border, 'flex', 'flex-col', 'items-center'
+      'bg-gradient-to-br', bgGradient, 'rounded-3xl', 'p-4', 'sm:p-6', 'shadow-xl',
+      'border-4', border, 'flex', 'flex-col', 'items-center', 'w-full'
     ]);
     const titleEl = this.api!.createElement('span', [
-      'text-xs', 'font-black', 'text-gray-500', 'uppercase', 'tracking-wider', 'mb-2'
+      'text-xs', 'font-black', 'text-gray-600', 'uppercase', 'tracking-wider', 'mb-3'
     ]);
     titleEl.textContent = title;
     box.appendChild(titleEl);
