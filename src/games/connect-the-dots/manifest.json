@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schemas/game-manifest.json",
+  "id": "connect-the-dots",
+  "name": "Connect the Dots",
+  "description": "Tap or drag numbers in sequence (1 → 2 → 3...) to reveal hidden pictures and shapes! Builds number ordering and fine motor control.",
+  "version": "1.0.0",
+  "engine": "canvas-engine",
+  "category": "drawing-tracing",
+  "difficulty": {
+    "min": 1,
+    "max": 5,
+    "default": 1
+  },
+  "ageRange": {
+    "min": 3,
+    "max": 7
+  },
+  "assets": {
+    "images": [],
+    "sounds": [],
+    "fonts": [],
+    "videos": []
+  },
+  "settings": {
+    "shapes": ["star", "house", "boat", "rocket", "heart"]
+  }
+}
