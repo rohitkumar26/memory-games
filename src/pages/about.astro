@@ -1,0 +1,141 @@
+---
+import GameShell from '../layouts/GameShell.astro';
+
+const aboutSchema = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "About Kids Memory Games & Educational Cognitive Science",
+  "description": "Learn about the cognitive science, neuroplasticity, and educational methodology behind our 5 core brain pillars for children.",
+  "inLanguage": "en-US"
+};
+
+const pillars = [
+  {
+    icon: '🧩',
+    name: 'Visual-Spatial Memory',
+    color: 'from-pink-500 to-rose-500',
+    desc: 'Helps children remember the location, orientation, and subtle differences between objects in space. Fundamental for geometry, reading maps, and spatial reasoning.'
+  },
+  {
+    icon: '🎵',
+    name: 'Sequence & Auditory Recall',
+    color: 'from-blue-500 to-cyan-500',
+    desc: 'Trains sequential processing and working memory capacity by remembering melodies, rhythms, and multi-digit sequences forward and reverse.'
+  },
+  {
+    icon: '📊',
+    name: 'Category Sorting & Classification',
+    color: 'from-yellow-500 to-amber-500',
+    desc: 'Strengthens semantic categorization, scientific classification (habitats, food groups), and logical reasoning by grouping items by shared attributes.'
+  },
+  {
+    icon: '👁️',
+    name: 'Short-Term Object Recall',
+    color: 'from-purple-500 to-violet-500',
+    desc: 'Based on the classical "Kim’s Game" memory technique. Encourages active mental visualization and rapid observation of missing or changed elements.'
+  },
+  {
+    icon: '✏️',
+    name: 'Drawing & Fine Motor Tracing',
+    color: 'from-emerald-500 to-teal-500',
+    desc: 'Develops pre-writing pencil grip, hand-eye coordination, and visual-motor integration via smooth HTML5 canvas path tracing and dot connection.'
+  }
+];
+---
+
+<GameShell 
+  title="About Our Educational Methodology & Cognitive Science — Kids Memory Games"
+  description="Discover the brain science, neuroplasticity principles, and developmental benefits behind our ad-free memory arcade for kids."
+  jsonLd={aboutSchema}
+>
+  <div class="min-h-screen flex flex-col justify-between">
+    <!-- Navigation Bar -->
+    <nav class="flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm border-b border-purple-100">
+      <a href="/" class="flex items-center gap-2 text-gray-700 hover:text-kid-purple transition-all font-black group">
+        <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Back to All Games</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🧠</span>
+        <span class="font-black text-gray-800">About & Science</span>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-4xl mx-auto px-4 py-12 flex-1">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-12 shadow-xl border-2 border-purple-100 flex flex-col gap-10">
+        
+        <!-- Header -->
+        <div class="border-b border-gray-100 pb-8 text-center max-w-2xl mx-auto">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-black mb-3">
+            <span>✨ Science-Backed Learning Through Play</span>
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+            Nurturing Young Minds Through Playful Science
+          </h1>
+          <p class="text-base text-gray-600 leading-relaxed font-medium">
+            We built <strong>Kids Memory Games</strong> with a single mission: to give every child across the world a free, fast, beautiful, and 100% ad-free environment to strengthen essential cognitive skills.
+          </p>
+        </div>
+
+        <!-- The 5 Cognitive Pillars -->
+        <div>
+          <h2 class="text-2xl font-black text-gray-900 mb-6 text-center">
+            Our 5 Cognitive Development Pillars
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {pillars.map((p) => (
+              <div class="p-6 bg-gray-50/80 hover:bg-white rounded-3xl border border-gray-200/80 hover:border-purple-300 shadow-2xs hover:shadow-md transition-all flex flex-col gap-2">
+                <div class="flex items-center gap-3">
+                  <span class="text-3xl p-2 rounded-2xl bg-white shadow-xs">{p.icon}</span>
+                  <h3 class="text-lg font-black text-gray-800">{p.name}</h3>
+                </div>
+                <p class="text-xs sm:text-sm text-gray-600 leading-relaxed font-medium mt-1">
+                  {p.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Zero Ads & Pure Privacy Pledge -->
+        <div class="p-8 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 rounded-3xl border-2 border-emerald-200 flex flex-col sm:flex-row items-center gap-6">
+          <div class="text-6xl animate-bounce-slow">🛡️</div>
+          <div>
+            <h2 class="text-xl font-black text-emerald-900 mb-1">
+              Why We Are 100% Ad-Free & Tracker-Free
+            </h2>
+            <p class="text-sm text-emerald-800/90 leading-relaxed font-medium">
+              Most educational websites today are cluttered with commercial banner ads, autoplay videos, and trackers that break a child's focus and pose privacy risks. Our platform operates with zero third-party ads, zero tracking cookies, and zero login barriers.
+            </p>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center pt-4">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-kid-purple to-kid-pink text-white rounded-3xl font-black text-lg shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          >
+            <span>🎮 Explore All Games</span>
+            <span>→</span>
+          </a>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-white/80 border-t border-purple-100 py-8 px-6 text-center text-xs text-gray-500">
+      <div class="flex flex-wrap justify-center gap-6 mb-4 font-bold text-gray-600">
+        <a href="/" class="hover:text-kid-purple">All Games</a>
+        <a href="/about" class="text-kid-purple">About & Methodology</a>
+        <a href="/privacy" class="hover:text-kid-purple">Privacy Policy</a>
+        <a href="/terms" class="hover:text-kid-purple">Terms of Service</a>
+        <a href="/contact" class="hover:text-kid-purple">Contact Us</a>
+      </div>
+      <p>© 2026 Kids Memory Games Arcade • Ad-Free, Kid-Safe & COPPA Compliant</p>
+    </footer>
+  </div>
+</GameShell>

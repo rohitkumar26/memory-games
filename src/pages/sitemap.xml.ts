@@ -9,18 +9,26 @@ export const GET: APIRoute = async () => {
   const baseUrl = 'https://kidsmemorygames.pages.dev';
   const lastmod = new Date().toISOString().split('T')[0];
 
+  const staticPages = [
+    { path: '', priority: '1.0', changefreq: 'daily' },
+    { path: 'about', priority: '0.9', changefreq: 'monthly' },
+    { path: 'privacy', priority: '0.7', changefreq: 'monthly' },
+    { path: 'terms', priority: '0.7', changefreq: 'monthly' },
+    { path: 'contact', priority: '0.8', changefreq: 'monthly' },
+  ];
+
   const urls = [
-    `  <url>
-    <loc>${baseUrl}/</loc>
+    ...staticPages.map(sp => `  <url>
+    <loc>${baseUrl}/${sp.path}</loc>
     <lastmod>${lastmod}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>`,
+    <changefreq>${sp.changefreq}</changefreq>
+    <priority>${sp.priority}</priority>
+  </url>`),
     ...gameIds.map(id => `  <url>
     <loc>${baseUrl}/play/${id}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>`)
   ];
 

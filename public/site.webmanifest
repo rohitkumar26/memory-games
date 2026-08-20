@@ -1,0 +1,19 @@
+{
+  "name": "Kids Memory Games Arcade",
+  "short_name": "Memory Games",
+  "description": "Ad-free, COPPA-safe educational memory and cognitive games for kids aged 3–10.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF5FF",
+  "theme_color": "#8B5CF6",
+  "orientation": "any",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

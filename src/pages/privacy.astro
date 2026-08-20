@@ -1,0 +1,132 @@
+---
+import GameShell from '../layouts/GameShell.astro';
+
+const privacySchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Children's Privacy Policy (COPPA & GDPR-K Compliant)",
+  "description": "Privacy policy for Kids Memory Games. 100% ad-free, zero personal data collection, zero third-party tracking.",
+  "inLanguage": "en-US"
+};
+---
+
+<GameShell 
+  title="Children's Privacy Policy (COPPA & GDPR-K Compliant) — Kids Memory Games"
+  description="Our strict zero-data children's privacy policy. No trackers, no ads, no account creation, 100% kid-safe."
+  jsonLd={privacySchema}
+>
+  <div class="min-h-screen flex flex-col justify-between">
+    <!-- Navigation Bar -->
+    <nav class="flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm border-b border-purple-100">
+      <a href="/" class="flex items-center gap-2 text-gray-700 hover:text-kid-purple transition-all font-black group">
+        <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Back to All Games</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🔒</span>
+        <span class="font-black text-gray-800">Privacy & Safety</span>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-4xl mx-auto px-4 py-12 flex-1">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-12 shadow-xl border-2 border-purple-100 flex flex-col gap-8">
+        
+        <!-- Header -->
+        <div class="border-b border-gray-100 pb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-black mb-3">
+            <span>🛡️ 100% COPPA & GDPR-K Compliant</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-black text-gray-900 mb-2">
+            Children's Privacy Policy
+          </h1>
+          <p class="text-sm text-gray-500 font-medium">
+            Last Updated: August 2026 • Effective Immediately
+          </p>
+        </div>
+
+        <!-- Highlights Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 bg-purple-50 rounded-2xl border border-purple-100">
+            <div class="text-2xl mb-1">🚫</div>
+            <h2 class="font-black text-gray-800 text-sm mb-1">No Personal Data</h2>
+            <p class="text-xs text-gray-600">We do not collect names, emails, locations, or photos from any child.</p>
+          </div>
+          <div class="p-4 bg-pink-50 rounded-2xl border border-pink-100">
+            <div class="text-2xl mb-1">🍪</div>
+            <h2 class="font-black text-gray-800 text-sm mb-1">Zero Tracking Cookies</h2>
+            <p class="text-xs text-gray-600">No third-party advertising cookies, analytics beacons, or behavioral trackers.</p>
+          </div>
+          <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+            <div class="text-2xl mb-1">💾</div>
+            <h2 class="font-black text-gray-800 text-sm mb-1">100% On-Device</h2>
+            <p class="text-xs text-gray-600">Scores, high scores, and sound mute preferences are stored strictly inside your browser.</p>
+          </div>
+        </div>
+
+        <!-- Detailed Legal Policy Text -->
+        <div class="space-y-6 text-sm text-gray-700 leading-relaxed font-medium">
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">1. Our Commitment to Children's Safety</h2>
+            <p>
+              Kids Memory Games ("we", "our", or "the Platform") is designed specifically for children aged 3 to 10, parents, and educators. We are firmly committed to protecting children's privacy online and adhering to the United States Children's Online Privacy Protection Act (<strong>COPPA</strong>) and the European Union General Data Protection Regulation for Children (<strong>GDPR-K</strong>).
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">2. Information We Do NOT Collect</h2>
+            <p class="mb-2">We believe the safest way to protect children's data is to simply never collect it in the first place:</p>
+            <ul class="list-disc pl-6 space-y-1 text-gray-600">
+              <li>No user registration, accounts, or login requirements.</li>
+              <li>No collection of names, physical addresses, email addresses, or phone numbers.</li>
+              <li>No collection of geolocation data or IP addresses.</li>
+              <li>No camera, microphone, or biometric data access.</li>
+              <li>No behavioral tracking or profile building.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">3. Local Device Storage (`localStorage`)</h2>
+            <p>
+              To provide a delightful gameplay experience, we use browser-standard <code>localStorage</code> purely on the child's local device for:
+            </p>
+            <ul class="list-disc pl-6 space-y-1 text-gray-600 mt-2">
+              <li>Saving highest scores and best times (e.g. personal best in Memory Match).</li>
+              <li>Preserving the sound effects volume preference (Muted 🔇 / Unmuted 🔊).</li>
+            </ul>
+            <p class="mt-2 text-xs text-gray-500">
+              This data never leaves your device and is never transmitted to any external server or third party. Parents can clear this data at any time by clearing browser site data.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">4. Third-Party Advertising & External Links</h2>
+            <p>
+              Our platform is <strong>100% Free of Third-Party Advertising</strong>. We do not display Google AdSense, banners, video popups, or programmatic ads. There are zero external outbound links within game canvas viewports to prevent accidental child navigation.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">5. Parental Rights & Inquiries</h2>
+            <p>
+              Parents and legal guardians have the right to review, refuse, or request the deletion of any inquiries submitted via our contact page. If you have any questions or feedback regarding our privacy practices, please contact us at <a href="/contact" class="text-kid-purple font-bold underline">our Contact Page</a>.
+            </p>
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-white/80 border-t border-purple-100 py-8 px-6 text-center text-xs text-gray-500">
+      <div class="flex flex-wrap justify-center gap-6 mb-4 font-bold text-gray-600">
+        <a href="/" class="hover:text-kid-purple">All Games</a>
+        <a href="/about" class="hover:text-kid-purple">About & Methodology</a>
+        <a href="/privacy" class="text-kid-purple">Privacy Policy</a>
+        <a href="/terms" class="hover:text-kid-purple">Terms of Service</a>
+        <a href="/contact" class="hover:text-kid-purple">Contact Us</a>
+      </div>
+      <p>© 2026 Kids Memory Games Arcade • Ad-Free, Kid-Safe & COPPA Compliant</p>
+    </footer>
+  </div>
+</GameShell>

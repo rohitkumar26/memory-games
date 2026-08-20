@@ -1,0 +1,101 @@
+---
+import GameShell from '../layouts/GameShell.astro';
+
+const termsSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Terms of Service — Kids Memory Games",
+  "description": "Terms of service and free educational usage policy for Kids Memory Games.",
+  "inLanguage": "en-US"
+};
+---
+
+<GameShell 
+  title="Terms of Service & Free Classroom License — Kids Memory Games"
+  description="Terms of service and free usage terms for parents, educators, and schools."
+  jsonLd={termsSchema}
+>
+  <div class="min-h-screen flex flex-col justify-between">
+    <!-- Navigation Bar -->
+    <nav class="flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm border-b border-purple-100">
+      <a href="/" class="flex items-center gap-2 text-gray-700 hover:text-kid-purple transition-all font-black group">
+        <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Back to All Games</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">📜</span>
+        <span class="font-black text-gray-800">Terms of Service</span>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-4xl mx-auto px-4 py-12 flex-1">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-12 shadow-xl border-2 border-purple-100 flex flex-col gap-8">
+        
+        <!-- Header -->
+        <div class="border-b border-gray-100 pb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-black mb-3">
+            <span>🏫 Free for Homes, Schools & Daycares</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-black text-gray-900 mb-2">
+            Terms of Service & Usage License
+          </h1>
+          <p class="text-sm text-gray-500 font-medium">
+            Effective Date: August 2026
+          </p>
+        </div>
+
+        <!-- Detailed Legal Policy Text -->
+        <div class="space-y-6 text-sm text-gray-700 leading-relaxed font-medium">
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">1. Acceptance of Terms</h2>
+            <p>
+              By accessing and using Kids Memory Games ("the Site"), you, your children, or students under your supervision agree to be bound by these Terms of Service. If you do not agree with any part of these terms, please do not use the Site.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">2. Free License for Families & Classrooms</h2>
+            <p>
+              We grant all parents, teachers, schools, speech-language therapists, and daycare centers a worldwide, royalty-free, non-exclusive license to use, display, and play all games on this platform for personal and non-commercial educational purposes without subscription fees or registrations.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">3. Intellectual Property Rights</h2>
+            <p>
+              All game engines, source code, interactive game logic, custom graphics, SVG layouts, and synthesized audio engines are the intellectual property of the Platform. You may not scrape, frame, clone, reverse engineer, or sell our games for commercial resale without prior written authorization.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">4. Disclaimer & Educational Nature</h2>
+            <p>
+              Our games are developed to encourage cognitive development, attention span, and working memory through playful puzzle solving. The games are provided for educational and recreational enjoyment on an "as is" and "as available" basis without warranties of any kind.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-black text-gray-900 mb-2">5. Contact & Inquiries</h2>
+            <p>
+              For classroom partnership inquiries, bug reports, or licensing questions, please visit <a href="/contact" class="text-kid-purple font-bold underline">our Contact Page</a>.
+            </p>
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-white/80 border-t border-purple-100 py-8 px-6 text-center text-xs text-gray-500">
+      <div class="flex flex-wrap justify-center gap-6 mb-4 font-bold text-gray-600">
+        <a href="/" class="hover:text-kid-purple">All Games</a>
+        <a href="/about" class="hover:text-kid-purple">About & Methodology</a>
+        <a href="/privacy" class="hover:text-kid-purple">Privacy Policy</a>
+        <a href="/terms" class="text-kid-purple">Terms of Service</a>
+        <a href="/contact" class="hover:text-kid-purple">Contact Us</a>
+      </div>
+      <p>© 2026 Kids Memory Games Arcade • Ad-Free, Kid-Safe & COPPA Compliant</p>
+    </footer>
+  </div>
+</GameShell>

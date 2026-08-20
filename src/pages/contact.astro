@@ -1,0 +1,134 @@
+---
+import GameShell from '../layouts/GameShell.astro';
+
+const contactSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact Kids Memory Games",
+  "description": "Get in touch with the Kids Memory Games team. Suggest new mini-games, request educational themes, or share classroom feedback.",
+  "inLanguage": "en-US"
+};
+---
+
+<GameShell 
+  title="Contact Us & Suggest New Games — Kids Memory Games"
+  description="Have an idea for a new kids memory game or classroom theme? Reach out to our team."
+  jsonLd={contactSchema}
+>
+  <div class="min-h-screen flex flex-col justify-between">
+    <!-- Navigation Bar -->
+    <nav class="flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm border-b border-purple-100">
+      <a href="/" class="flex items-center gap-2 text-gray-700 hover:text-kid-purple transition-all font-black group">
+        <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Back to All Games</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">📬</span>
+        <span class="font-black text-gray-800">Contact & Feedback</span>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-3xl mx-auto px-4 py-12 flex-1">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-12 shadow-xl border-2 border-purple-100 flex flex-col gap-8">
+        
+        <!-- Header -->
+        <div class="text-center border-b border-gray-100 pb-6">
+          <div class="text-5xl mb-3 animate-bounce-slow">💌</div>
+          <h1 class="text-3xl sm:text-4xl font-black text-gray-900 mb-2">
+            We Love Hearing From You!
+          </h1>
+          <p class="text-sm sm:text-base text-gray-600 font-medium max-w-lg mx-auto">
+            Are you a parent, educator, or therapist? Tell us what new games, themes, or accessibility features you'd like to see!
+          </p>
+        </div>
+
+        <!-- Contact Form (Client-side ready) -->
+        <form 
+          id="contact-form" 
+          class="flex flex-col gap-5"
+          onsubmit="event.preventDefault(); document.getElementById('contact-success').classList.remove('hidden'); this.reset();"
+        >
+          <div class="flex flex-col gap-1.5">
+            <label for="name" class="text-xs font-black uppercase tracking-wider text-gray-500">
+              Your Name (or School / Organization)
+            </label>
+            <input 
+              type="text" 
+              id="name" 
+              required
+              placeholder="e.g. Sarah Jenkins (Elementary Teacher)"
+              class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-gray-200 focus:border-kid-purple focus:bg-white focus:outline-none text-sm font-medium transition"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="email" class="text-xs font-black uppercase tracking-wider text-gray-500">
+              Email Address
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              required
+              placeholder="e.g. sarah@school.edu"
+              class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-gray-200 focus:border-kid-purple focus:bg-white focus:outline-none text-sm font-medium transition"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="topic" class="text-xs font-black uppercase tracking-wider text-gray-500">
+              Topic
+            </label>
+            <select 
+              id="topic"
+              class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-gray-200 focus:border-kid-purple focus:bg-white focus:outline-none text-sm font-bold text-gray-700 transition cursor-pointer"
+            >
+              <option value="suggest_game">💡 Suggest a New Mini-Game</option>
+              <option value="classroom_use">🏫 Classroom & School Inquiries</option>
+              <option value="bug_report">🐞 Report an Issue or Bug</option>
+              <option value="general_feedback">💜 General Praise & Feedback</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="message" class="text-xs font-black uppercase tracking-wider text-gray-500">
+              Your Message or Idea
+            </label>
+            <textarea 
+              id="message" 
+              rows="4" 
+              required
+              placeholder="Share your thoughts or game request here..."
+              class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-gray-200 focus:border-kid-purple focus:bg-white focus:outline-none text-sm font-medium transition resize-none"
+            ></textarea>
+          </div>
+
+          <button 
+            type="submit"
+            class="mt-2 w-full py-4 bg-gradient-to-r from-kid-purple to-kid-pink text-white font-black text-base rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
+          >
+            🚀 Send Feedback
+          </button>
+        </form>
+
+        <!-- Success notification -->
+        <div id="contact-success" class="hidden p-4 bg-emerald-100 text-emerald-800 rounded-2xl text-center font-bold text-sm border border-emerald-200 animate-pop">
+          🎉 Thank you so much! Your feedback helps make these games better for children worldwide.
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-white/80 border-t border-purple-100 py-8 px-6 text-center text-xs text-gray-500">
+      <div class="flex flex-wrap justify-center gap-6 mb-4 font-bold text-gray-600">
+        <a href="/" class="hover:text-kid-purple">All Games</a>
+        <a href="/about" class="hover:text-kid-purple">About & Methodology</a>
+        <a href="/privacy" class="hover:text-kid-purple">Privacy Policy</a>
+        <a href="/terms" class="hover:text-kid-purple">Terms of Service</a>
+        <a href="/contact" class="text-kid-purple">Contact Us</a>
+      </div>
+      <p>© 2026 Kids Memory Games Arcade • Ad-Free, Kid-Safe & COPPA Compliant</p>
+    </footer>
+  </div>
+</GameShell>
