@@ -230,7 +230,8 @@ export default {
 
     const config = DIFFICULTY_CONFIG[this.currentLevel - 1] || DIFFICULTY_CONFIG[0];
     const totalTiles = config.rows * config.cols;
-    const themePool = shuffle([...THEMES[this.currentTheme]]);
+    const themeList = THEMES[this.currentTheme] || THEMES.pets;
+    const themePool = shuffle([...themeList]);
 
     this.diffsFoundCount = 0;
     this.totalDiffs = config.diffCount;
