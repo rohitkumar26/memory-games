@@ -9,8 +9,8 @@ import { createCanvasEngineAPI } from '../canvas-engine/api';
 import { globalEvents } from '../../core/events';
 
 // Resolved once at module load, shared with the page loader
-const gameModules = import.meta.glob('/src/games/*/game.ts');
-const gameManifests = import.meta.glob('/src/games/*/manifest.json', { eager: true });
+const gameModules = import.meta.glob(['/src/games/*/game.ts', '../../games/*/game.ts']);
+const gameManifests = import.meta.glob(['/src/games/*/manifest.json', '../../games/*/manifest.json'], { eager: true });
 
 export class DOMEngine {
   private container: HTMLElement | null = null;
@@ -36,20 +36,21 @@ export class DOMEngine {
     }
 
     try {
-      const modulePath = `/src/games/${gameId}/game.ts`;
-      const manifestPath = `/src/games/${gameId}/manifest.json`;
+      // Find matching module and manifest by gameId in path
+      const moduleKey = Object.keys(gameModules).find(k => k.includes(`/games/${gameId}/game.ts`) || k.endsWith(`${gameId}/game.ts`));
+      const manifestKey = Object.keys(gameManifests).find(k => k.includes(`/games/${gameId}/manifest.json`) || k.endsWith(`${gameId}/manifest.json`));
 
-      const moduleLoader = gameModules[modulePath];
-      const manifestMod = gameManifests[manifestPath] as any;
+      const moduleLoader = (moduleKey ? gameModules[moduleKey] : null) || gameModules[`/src/games/${gameId}/game.ts`];
+      const manifestMod = (manifestKey ? (gameManifests[manifestKey] as any) : null) || gameManifests[`/src/games/${gameId}/manifest.json`];
       const manifest = manifestMod?.default || manifestMod;
 
       if (!moduleLoader || !manifest) {
-        throw new Error(`Game "${gameId}" not found`);
+        throw new Error(`Game "${gameId}" not found in modules catalog`);
       }
 
       const module = await moduleLoader() as { default: GameModule };
 
-      if (!module.default.init || !module.default.destroy) {
+      if (!module.default || !module.default.init || !module.default.destroy) {
         throw new Error(`Game ${gameId} missing required hooks: init, destroy`);
       }
 
