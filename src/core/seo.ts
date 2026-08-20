@@ -57,6 +57,21 @@ export const GAME_SEO_REGISTRY: Record<string, GameSEOData> = {
     ],
     keywords: ['spot the difference game for kids', 'find the difference online free', 'visual attention games for children', 'observation puzzles kids']
   },
+  'maze-memory': {
+    skills: ['Spatial Orientation', 'Mental Path Mapping', 'Working Memory', 'Visual Forward Planning'],
+    learningObjective: 'Develops cognitive mapping and spatial planning by memorizing labyrinth routes before navigating a character from start to goal.',
+    howToPlay: [
+      'Look closely at the glowing golden path that lights up across the labyrinth.',
+      'Remember the turns and steps before the timer runs out.',
+      'Tap or step along the memorized path to guide your character to the treasure.',
+      'Reach the goal safely without stepping into labyrinth walls.'
+    ],
+    parentTips: [
+      'Encourage children to verbalize directions (e.g. "Right two steps, down two steps") to pair verbal memory with spatial memory.',
+      'Builds foundational mental planning and foresight for maze problem solving.'
+    ],
+    keywords: ['maze memory game for kids', 'labyrinth path recall online', 'spatial memory games for children', 'preschool maze puzzle', 'kids navigation brain game']
+  },
   'simon-says': {
     skills: ['Auditory Working Memory', 'Sequential Processing', 'Motor Inhibition', 'Audio-Visual Integration'],
     learningObjective: 'Boosts sequential memory capacity and focus by observing, memorizing, and reproducing growing audio-visual patterns.',
