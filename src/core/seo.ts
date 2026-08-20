@@ -87,6 +87,21 @@ export const GAME_SEO_REGISTRY: Record<string, GameSEOData> = {
     ],
     keywords: ['simon says game online free', 'sequence memory game for kids', 'audio memory game', 'repeat pattern game kids', 'preschool rhythm memory']
   },
+  'rhythm-repeat': {
+    skills: ['Rhythm Perception', 'Auditory Sequential Memory', 'Beat Synchronization', 'Motor Timing'],
+    learningObjective: 'Enhances rhythmic timing, auditory sequence memory, and musical tempo awareness by listening to instrument beats and repeating them.',
+    howToPlay: [
+      'Listen carefully as the drums, piano, or synthesizer play a rhythmic beat.',
+      'Watch the musical pads light up to the tempo.',
+      'When your turn begins, tap the pads in the exact same rhythm and sequence.',
+      'Complete all rounds to become a Rhythm Maestro!'
+    ],
+    parentTips: [
+      'Clap hands along with the beat to reinforce physical body-rhythm connection.',
+      'Musical rhythm training is strongly linked to phonological awareness and early reading skills.'
+    ],
+    keywords: ['rhythm repeat game for kids', 'drum beat memory game', 'musical sequence game online', 'kids rhythm memory', 'audio beat memory game']
+  },
   'number-sequence': {
     skills: ['Numeric Working Memory', 'Reverse Digit Span', 'Executive Function', 'Mental Manipulation'],
     learningObjective: 'Strengthens active working memory and mathematical agility by holding and manipulating number sequences forward and backward.',
