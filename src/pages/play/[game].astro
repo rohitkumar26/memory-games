@@ -263,15 +263,20 @@ const gameSchema = {
     document.addEventListener('click', unlockAudio, { once: true });
     document.addEventListener('touchstart', unlockAudio, { once: true });
 
-    // Mount and load game directly to its menu screen
+    // Mount and load game
     const gameId = document.getElementById('game-root')?.dataset.gameId;
     const urlParams = new URLSearchParams(window.location.search);
     const difficultyParam = parseInt(urlParams.get('difficulty') || urlParams.get('level') || '0', 10);
+    const shouldAutoStart = urlParams.get('start') === 'true' || urlParams.get('autoplay') === 'true';
 
     if (gameId && (window as any).GameEngine) {
       (window as any).GameEngine.mount('game-root');
       (window as any).GameEngine.load(gameId, {
         level: difficultyParam > 0 ? difficultyParam : undefined
+      }).then(() => {
+        if (shouldAutoStart) {
+          (window as any).GameEngine.start(difficultyParam > 0 ? difficultyParam : undefined);
+        }
       });
     }
   </script>
