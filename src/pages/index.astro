@@ -153,15 +153,16 @@ const categories = [
             data-game-id={game.id}
             data-default-level={game.difficulty.default || 1}
             data-selected-level={game.difficulty.default || 1}
-            class="game-card group relative bg-white rounded-3xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border-4 border-transparent hover:border-kid-purple/30 flex flex-col justify-between"
+            class="game-card group relative bg-white rounded-3xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border-4 border-transparent hover:border-kid-purple/30 flex flex-col justify-between cursor-pointer"
           >
             <!-- Category Gradient Bar -->
             <div class={`absolute top-0 left-0 right-0 h-2.5 bg-gradient-to-r ${categoryColors[game.category] || 'from-gray-400 to-gray-500'} rounded-t-3xl`} />
 
-            <div>
+            <!-- Card Header & Body Link -->
+            <a href={`/play/${game.id}`} class="card-body-link block cursor-pointer text-left focus:outline-none">
               <!-- Card Header -->
               <div class="flex items-start justify-between mb-3 mt-1">
-                <span class="text-4xl">{gameIcons[game.id] || '🎮'}</span>
+                <span class="text-4xl group-hover:scale-110 transition-transform">{gameIcons[game.id] || '🎮'}</span>
                 <div class="flex flex-col items-end gap-1">
                   <span class="px-3 py-1 bg-gray-100 rounded-full text-xs font-bold text-gray-500">
                     Ages {game.ageRange.min}-{game.ageRange.max}
@@ -180,7 +181,7 @@ const categories = [
               <p class="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed">
                 {game.description}
               </p>
-            </div>
+            </a>
 
             <!-- Card Bottom: Interactive Difficulty Stars + Play Button -->
             <div class="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-3">
@@ -320,6 +321,16 @@ const categories = [
       const starButtons = card.querySelectorAll('.star-btn');
       const playBtn = card.querySelector('.play-game-btn');
       const levelText = card.querySelector('.selected-level-text');
+      // Clicking anywhere on the card (except star buttons or play button) opens game home page
+      card.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('.diff-stars-container') || target.closest('.play-game-btn') || target.closest('.card-body-link')) {
+          return;
+        }
+        if (gameId) {
+          window.location.href = `/play/${gameId}`;
+        }
+      });
 
       starButtons.forEach((starBtn) => {
         starBtn.addEventListener('click', (e) => {
