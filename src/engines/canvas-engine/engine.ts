@@ -1,21 +1,18 @@
 // ============================================
-// DOM Engine — Universal Engine Manager
-// Dispatches to appropriate Engine API based on manifest
+// Canvas Engine — Lifecycle manager for Canvas-based games
 // ============================================
 
 import type { GameModule } from '../../core/types';
-import { createEngineAPI } from './api';
-import { createCanvasEngineAPI } from '../canvas-engine/api';
+import { createCanvasEngineAPI } from './api';
 import { globalEvents } from '../../core/events';
 
-// Resolved once at module load, shared with the page loader
 const gameModules = import.meta.glob('/src/games/*/game.ts');
 const gameManifests = import.meta.glob('/src/games/*/manifest.json', { eager: true });
 
-export class DOMEngine {
+export class CanvasEngine {
   private container: HTMLElement | null = null;
   private currentGame: GameModule | null = null;
-  private api: any = null;
+  private api: ReturnType<typeof createCanvasEngineAPI> | null = null;
 
   mount(containerId: string): void {
     const el = document.getElementById(containerId);
@@ -26,7 +23,6 @@ export class DOMEngine {
   async load(gameId: string): Promise<void> {
     if (!this.container) throw new Error('Engine not mounted. Call mount() first.');
 
-    // Unload previous game if any
     if (this.currentGame) {
       await this.unload();
     }
@@ -36,8 +32,7 @@ export class DOMEngine {
       const manifestPath = `/src/games/${gameId}/manifest.json`;
 
       const moduleLoader = gameModules[modulePath];
-      const manifestMod = gameManifests[manifestPath] as any;
-      const manifest = manifestMod?.default || manifestMod;
+      const manifest = gameManifests[manifestPath];
 
       if (!moduleLoader || !manifest) {
         throw new Error(`Game "${gameId}" not found`);
@@ -49,12 +44,7 @@ export class DOMEngine {
         throw new Error(`Game ${gameId} missing required hooks: init, destroy`);
       }
 
-      if (manifest.engine === 'canvas-engine') {
-        this.api = createCanvasEngineAPI(gameId, this.container);
-      } else {
-        this.api = createEngineAPI(gameId, this.container);
-      }
-
+      this.api = createCanvasEngineAPI(gameId, this.container);
       this.currentGame = module.default;
 
       await this.currentGame.init(this.api);
@@ -86,7 +76,7 @@ export class DOMEngine {
       await this.currentGame.destroy();
       this.currentGame = null;
     }
-    if (this.api && typeof this.api._cleanup === 'function') {
+    if (this.api) {
       this.api._cleanup();
       this.api = null;
     }
@@ -105,8 +95,4 @@ export class DOMEngine {
       </div>
     `;
   }
-}
-
-if (typeof window !== 'undefined') {
-  (window as any).GameEngine = new DOMEngine();
 }
