@@ -18,6 +18,16 @@ const categoryColors: Record<string, string> = {
   'pattern-completion': 'from-green-400 to-emerald-400',
   'category-sorting': 'from-yellow-400 to-orange-400',
   'object-recall': 'from-purple-400 to-violet-400',
+  'drawing-tracing': 'from-amber-400 to-orange-400',
+};
+
+const categoryLabels: Record<string, string> = {
+  'visual-spatial': '🧩 Visual-Spatial',
+  'sequence-recall': '🎵 Sequence Recall',
+  'pattern-completion': '✨ Pattern Completion',
+  'category-sorting': '📊 Category Sorting',
+  'object-recall': '👁️ Object Recall',
+  'drawing-tracing': '✏️ Drawing & Tracing',
 };
 
 const gameIcons: Record<string, string> = {
@@ -27,6 +37,15 @@ const gameIcons: Record<string, string> = {
   'category-sorting': '🧺',
   'trace-the-path': '✏️',
 };
+
+const categories = [
+  { id: 'all', name: 'All Games', icon: '🌟' },
+  { id: 'visual-spatial', name: 'Visual-Spatial', icon: '🧩' },
+  { id: 'sequence-recall', name: 'Sequence Recall', icon: '🎵' },
+  { id: 'category-sorting', name: 'Category Sorting', icon: '📊' },
+  { id: 'object-recall', name: 'Object Recall', icon: '👁️' },
+  { id: 'drawing-tracing', name: 'Drawing & Tracing', icon: '✏️' },
+];
 ---
 
 <GameShell title="🧠 Kids Memory Games — Fun & Free!">
@@ -45,7 +64,7 @@ const gameIcons: Record<string, string> = {
     </div>
 
     <!-- Hero -->
-    <div class="text-center mb-12 animate-float">
+    <div class="text-center mb-8 animate-float">
       <h1 class="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-kid-purple via-kid-pink to-kid-orange mb-4">
         🧠 Memory Games
       </h1>
@@ -59,21 +78,54 @@ const gameIcons: Record<string, string> = {
       </div>
     </div>
 
+    <!-- Category Filter Tabs -->
+    <div class="w-full max-w-5xl mb-8">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none justify-start sm:justify-center px-1">
+        {categories.map((cat) => {
+          const count = cat.id === 'all' ? games.length : games.filter(g => g.category === cat.id).length;
+          return (
+            <button
+              class={`cat-filter-btn px-4 py-2.5 rounded-2xl font-black text-sm transition-all duration-200 cursor-pointer flex items-center gap-2 whitespace-nowrap shadow-sm border-2 ${
+                cat.id === 'all'
+                  ? 'bg-gradient-to-r from-kid-purple to-kid-pink text-white border-transparent shadow-md scale-105 active'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-kid-purple/50'
+              }`}
+              data-category={cat.id}
+            >
+              <span>{cat.icon}</span>
+              <span>{cat.name}</span>
+              <span class={`cat-badge px-2 py-0.5 rounded-full text-xs font-bold ${
+                cat.id === 'all' ? 'bg-white/30 text-white' : 'bg-gray-100 text-gray-500'
+              }`}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+
     <!-- Game Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
+    <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
       {games.map((game) => (
         <a 
           href={`/play/${game.id}`}
-          class="group relative bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 border-4 border-transparent hover:border-kid-purple/20 flex flex-col justify-between"
+          data-category={game.category}
+          class="game-card group relative bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 border-4 border-transparent hover:border-kid-purple/20 flex flex-col justify-between"
         >
           <div class={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${categoryColors[game.category] || 'from-gray-400 to-gray-500'} rounded-t-3xl`} />
 
           <div>
             <div class="flex items-start justify-between mb-3">
               <span class="text-4xl">{gameIcons[game.id] || '🎮'}</span>
-              <span class="px-3 py-1 bg-gray-100 rounded-full text-xs font-bold text-gray-500">
-                Ages {game.ageRange.min}-{game.ageRange.max}
-              </span>
+              <div class="flex flex-col items-end gap-1">
+                <span class="px-3 py-1 bg-gray-100 rounded-full text-xs font-bold text-gray-500">
+                  Ages {game.ageRange.min}-{game.ageRange.max}
+                </span>
+                <span class="px-2.5 py-0.5 bg-purple-50 text-purple-600 rounded-full text-[11px] font-bold">
+                  {categoryLabels[game.category] || game.category}
+                </span>
+              </div>
             </div>
 
             <h2 class="text-2xl font-black text-gray-800 mb-2 group-hover:text-kid-purple transition-colors">
@@ -99,6 +151,13 @@ const gameIcons: Record<string, string> = {
       ))}
     </div>
 
+    <!-- Empty State for categories with 0 games yet -->
+    <div id="no-games-msg" class="hidden text-center py-12 px-6 bg-white/70 backdrop-blur rounded-3xl max-w-md mx-auto border-3 border-dashed border-purple-200 shadow-sm mt-4">
+      <div class="text-5xl mb-3 animate-bounce-slow">🚀</div>
+      <h3 class="text-xl font-black text-gray-700 mb-1">Coming Next!</h3>
+      <p class="text-sm text-gray-500">We are currently crafting new games for this category.</p>
+    </div>
+
     <!-- Footer -->
     <footer class="mt-16 text-center text-gray-400 text-sm">
       <p>Made with 💜 for kids everywhere. No ads. No tracking. Just fun.</p>
@@ -109,6 +168,7 @@ const gameIcons: Record<string, string> = {
   <script>
     import { globalAudio } from '../core/audio';
 
+    // Sound toggle
     const soundBtn = document.getElementById('home-sound-btn');
     const soundIcon = document.getElementById('home-sound-icon');
 
@@ -127,5 +187,51 @@ const gameIcons: Record<string, string> = {
     });
 
     window.addEventListener('audiomutestatuschange', updateSoundIcon);
+
+    // Category Tabs Filtering
+    const filterButtons = document.querySelectorAll('.cat-filter-btn');
+    const gameCards = document.querySelectorAll('.game-card');
+    const noGamesMsg = document.getElementById('no-games-msg');
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-category');
+
+        filterButtons.forEach((b) => {
+          b.classList.remove('bg-gradient-to-r', 'from-kid-purple', 'to-kid-pink', 'text-white', 'border-transparent', 'shadow-md', 'scale-105', 'active');
+          b.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+          const badge = b.querySelector('.cat-badge');
+          if (badge) {
+            badge.className = 'cat-badge px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500';
+          }
+        });
+
+        btn.classList.add('bg-gradient-to-r', 'from-kid-purple', 'to-kid-pink', 'text-white', 'border-transparent', 'shadow-md', 'scale-105', 'active');
+        btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+        const badge = btn.querySelector('.cat-badge');
+        if (badge) {
+          badge.className = 'cat-badge px-2 py-0.5 rounded-full text-xs font-bold bg-white/30 text-white';
+        }
+
+        let visibleCount = 0;
+        gameCards.forEach((card) => {
+          const cardCat = card.getAttribute('data-category');
+          if (cat === 'all' || cardCat === cat) {
+            (card as HTMLElement).style.display = 'flex';
+            visibleCount++;
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+
+        if (noGamesMsg) {
+          if (visibleCount === 0) {
+            noGamesMsg.classList.remove('hidden');
+          } else {
+            noGamesMsg.classList.add('hidden');
+          }
+        }
+      });
+    });
   </script>
 </GameShell>

@@ -9,7 +9,8 @@ const VALID_CATEGORIES = [
   'sequence-recall',
   'pattern-completion',
   'category-sorting',
-  'object-recall'
+  'object-recall',
+  'drawing-tracing'
 ];
 
 const VALID_ENGINES = [
