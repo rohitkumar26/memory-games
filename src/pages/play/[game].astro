@@ -1,5 +1,6 @@
 ---
 import GameShell from '../../layouts/GameShell.astro';
+import { GAME_SEO_REGISTRY } from '../../core/seo';
 
 export function getStaticPaths() {
   const manifests = import.meta.glob('../../games/*/manifest.json', { eager: true });
@@ -16,34 +17,215 @@ export function getStaticPaths() {
 
 const { game } = Astro.params;
 const { manifest } = Astro.props;
+
+// Auto-discover all other games for related recommendations
+const allManifests = import.meta.glob('../../games/*/manifest.json', { eager: true });
+const allGames = Object.entries(allManifests).map(([path, mod]) => {
+  const m = (mod as any).default;
+  return {
+    ...m,
+    id: path.replace('../../games/', '').replace('/manifest.json', '')
+  };
+});
+
+const relatedGames = allGames
+  .filter(g => g.id !== game)
+  .slice(0, 3);
+
+const seoData = (game && GAME_SEO_REGISTRY[game]) || {
+  skills: ['Memory Retention', 'Focus & Attention', 'Pattern Recognition'],
+  learningObjective: manifest.description,
+  howToPlay: ['Follow the on-screen instructions to play and complete all rounds!'],
+  parentTips: ['Encourage your child to practice regularly to strengthen memory pathways.'],
+  keywords: ['kids memory games', `${manifest.name.toLowerCase()} game`, 'preschool educational games']
+};
+
+const gameIcons: Record<string, string> = {
+  'memory-match': '🧠',
+  'simon-says': '🚦',
+  'shadow-matching': '🌓',
+  'category-sorting': '🧺',
+  'trace-the-path': '✏️',
+  'whats-missing': '🕵️',
+  'spot-the-difference': '🔍',
+  'connect-the-dots': '🔢',
+  'number-sequence': '🎯',
+  'habitat-sort': '🌴',
+};
+
+// Schema.org VideoGame & LearningResource JSON-LD
+const gameSchema = {
+  "@context": "https://schema.org",
+  "@type": ["VideoGame", "LearningResource"],
+  "name": `${manifest.name} — Kids Memory Game`,
+  "description": manifest.description,
+  "educationalLevel": `Preschool to Elementary (Ages ${manifest.ageRange.min}–${manifest.ageRange.max})`,
+  "learningResourceType": "Interactive Educational Game",
+  "teaches": seoData.skills.join(', '),
+  "genre": [manifest.category, "Educational", "Kids", "Memory"],
+  "playMode": "SinglePlayer",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Any modern web browser (Desktop, Tablet, Mobile)",
+  "audience": {
+    "@type": "PeopleAudience",
+    "suggestedMinAge": manifest.ageRange.min,
+    "suggestedMaxAge": manifest.ageRange.max
+  },
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  }
+};
 ---
 
-<GameShell title={`Play ${manifest.name}`} description={manifest.description}>
-  <div class="min-h-screen flex flex-col">
-    <!-- Top bar -->
-    <nav class="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur sticky top-0 z-30 shadow-sm">
-      <a 
-        href="/" 
-        class="flex items-center gap-2 text-gray-600 hover:text-kid-purple transition font-bold"
-      >
-        <span class="text-xl">←</span>
-        <span class="hidden sm:inline">All Games</span>
-      </a>
-      <h1 class="text-lg font-black text-gray-700">{manifest.name}</h1>
-      <div class="flex items-center justify-end w-20">
-        <button
-          id="sound-toggle-btn"
-          class="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-2xl text-lg font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center"
-          title="Toggle Sound"
-          aria-label="Toggle Sound"
+<GameShell 
+  title={`${manifest.name} — Free Educational Memory Game for Kids (Ages ${manifest.ageRange.min}–${manifest.ageRange.max})`}
+  description={manifest.description}
+  keywords={seoData.keywords}
+  jsonLd={gameSchema}
+  ogType="game"
+>
+  <div class="min-h-screen flex flex-col justify-between">
+    <div>
+      <!-- Top Navigation Bar -->
+      <nav class="flex items-center justify-between px-4 sm:px-8 py-3.5 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm border-b border-purple-100">
+        <a 
+          href="/" 
+          class="flex items-center gap-2 text-gray-700 hover:text-kid-purple transition-all font-black text-sm sm:text-base group cursor-pointer"
         >
-          <span id="sound-icon">🔊</span>
-        </button>
-      </div>
-    </nav>
+          <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+          <span>All Games</span>
+        </a>
 
-    <!-- Game viewport -->
-    <div id="game-root" class="flex-1" data-game-id={game}></div>
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">{gameIcons[game || ''] || '🎮'}</span>
+          <h1 class="text-lg sm:text-xl font-black text-gray-800 tracking-tight">{manifest.name}</h1>
+          <span class="hidden sm:inline-block px-2.5 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs font-black ml-2">
+            Ages {manifest.ageRange.min}–{manifest.ageRange.max}
+          </span>
+        </div>
+
+        <div class="flex items-center justify-end w-20">
+          <button
+            id="sound-toggle-btn"
+            class="px-3.5 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-2xl text-lg font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center border border-purple-200/60"
+            title="Toggle Sound"
+            aria-label="Toggle Sound"
+          >
+            <span id="sound-icon">🔊</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Game Interactive Viewport -->
+      <div id="game-root" class="w-full flex-1" data-game-id={game}></div>
+    </div>
+
+    <!-- Semantic Educational Content & Parent/Teacher Guide -->
+    <section class="w-full max-w-4xl mx-auto px-4 py-12 mt-8">
+      <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-lg border-2 border-purple-100/80 flex flex-col gap-8">
+        
+        <!-- Header & Objective -->
+        <div>
+          <div class="flex items-center gap-2 text-kid-purple font-black text-xs uppercase tracking-widest mb-1.5">
+            <span>🎓 Educational Overview</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-gray-800 mb-3">
+            About {manifest.name}
+          </h2>
+          <p class="text-gray-600 text-base leading-relaxed">
+            {seoData.learningObjective}
+          </p>
+        </div>
+
+        <!-- Skills Trained Badges -->
+        <div>
+          <h3 class="text-sm font-black uppercase tracking-wider text-gray-400 mb-3">
+            🧠 Cognitive Skills Developed
+          </h3>
+          <div class="flex flex-wrap gap-2.5">
+            {seoData.skills.map((skill) => (
+              <span class="px-3.5 py-1.5 bg-purple-50 text-purple-700 border border-purple-100 rounded-xl text-xs sm:text-sm font-bold shadow-2xs">
+                ✨ {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <!-- How to Play & Parent Tips Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
+          <!-- How to Play -->
+          <div class="bg-gradient-to-br from-pink-50/60 to-purple-50/60 p-5 rounded-2xl border border-pink-100/80">
+            <h3 class="text-base font-black text-gray-800 mb-3 flex items-center gap-2">
+              <span>📖</span>
+              <span>How to Play</span>
+            </h3>
+            <ol class="space-y-2 text-xs sm:text-sm text-gray-600 font-medium">
+              {seoData.howToPlay.map((step, idx) => (
+                <li class="flex items-start gap-2">
+                  <span class="w-5 h-5 rounded-full bg-pink-200/80 text-pink-800 font-black text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                    {idx + 1}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <!-- Parent & Educator Tips -->
+          <div class="bg-gradient-to-br from-amber-50/60 to-orange-50/60 p-5 rounded-2xl border border-amber-100/80">
+            <h3 class="text-base font-black text-gray-800 mb-3 flex items-center gap-2">
+              <span>💡</span>
+              <span>Tips for Parents & Teachers</span>
+            </h3>
+            <ul class="space-y-2 text-xs sm:text-sm text-gray-600 font-medium">
+              {seoData.parentTips.map((tip) => (
+                <li class="flex items-start gap-2">
+                  <span class="text-amber-500 font-bold shrink-0">✦</span>
+                  <span>{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Related Games Recommendation -->
+        <div class="pt-6 border-t border-gray-100">
+          <h3 class="text-sm font-black uppercase tracking-wider text-gray-400 mb-4">
+            🎮 More Brain Games to Explore
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {relatedGames.map((rg) => (
+              <a
+                href={`/play/${rg.id}`}
+                class="p-4 bg-gray-50 hover:bg-white rounded-2xl border border-gray-200/80 hover:border-purple-300 shadow-2xs hover:shadow-md transition-all group flex flex-col justify-between"
+              >
+                <div class="flex items-center gap-2.5 mb-2">
+                  <span class="text-2xl group-hover:scale-110 transition-transform">
+                    {gameIcons[rg.id] || '🎮'}
+                  </span>
+                  <span class="font-black text-sm text-gray-800 group-hover:text-kid-purple transition-colors">
+                    {rg.name}
+                  </span>
+                </div>
+                <span class="text-xs font-bold text-kid-purple mt-2 flex items-center gap-1">
+                  Play Game →
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-400 text-xs py-8 border-t border-purple-100/50 mt-12 bg-white/50">
+      <p>Made with 💜 for kids everywhere. 100% Free, Zero Ads, COPPA Privacy-First.</p>
+    </footer>
   </div>
 
   <script>

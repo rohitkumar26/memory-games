@@ -1,0 +1,6 @@
+# Allow all web search engines and crawlers
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://kidsmemorygames.pages.dev/sitemap.xml
