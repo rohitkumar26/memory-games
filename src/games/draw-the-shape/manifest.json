@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schemas/game-manifest.json",
+  "id": "draw-the-shape",
+  "name": "Draw the Shape",
+  "description": "Memorize the glowing mystery shape before it fades, then draw its outline from memory on the canvas drawing pad!",
+  "version": "1.0.0",
+  "engine": "canvas-engine",
+  "category": "drawing-tracing",
+  "difficulty": {
+    "min": 1,
+    "max": 5,
+    "default": 1
+  },
+  "ageRange": {
+    "min": 4,
+    "max": 9
+  },
+  "assets": {
+    "images": [],
+    "sounds": [],
+    "fonts": [],
+    "videos": []
+  },
+  "settings": {
+    "rounds": 3,
+    "shapes": ["triangle", "square", "star", "heart", "rocket"]
+  }
+}

@@ -221,5 +221,20 @@ export const GAME_SEO_REGISTRY: Record<string, GameSEOData> = {
       'Ask your child to guess what shape or object is forming before the final dot is connected!'
     ],
     keywords: ['connect the dots online kids', 'dot to dot numbers game free', 'preschool counting game', 'numbered dot puzzle kids', 'early math motor games']
+  },
+  'draw-the-shape': {
+    skills: ['Visual Imagery Memory', 'Shape Geometry', 'Fine Motor Reconstruction', 'Spatial Proportions'],
+    learningObjective: 'Fosters acute mental imagery and geometry recall by reconstructing glowing polygon shapes on canvas from memory.',
+    howToPlay: [
+      'Look closely at the glowing geometric shape as it pulses on the canvas.',
+      'Memorize its sides, corners, and proportions before it fades away.',
+      'Draw the shape outline from memory using your finger or stylus.',
+      'Tap "Check My Shape" to see your accuracy rating and reveal the original!'
+    ],
+    parentTips: [
+      'Encourage children to name each shape and count its sides (e.g. "A triangle has 3 sides and 3 sharp corners").',
+      'Boosts spatial-motor confidence and visual memory reproduction.'
+    ],
+    keywords: ['draw the shape game kids', 'geometry memory game online', 'shape tracing game preschool', 'visual memory drawing game', 'drawing from memory kids']
   }
 };
