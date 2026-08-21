@@ -160,7 +160,22 @@ export const GAME_SEO_REGISTRY: Record<string, GameSEOData> = {
       'Encourage children to invent a silly short story connecting all items on the tray to dramatically boost recall.',
       'Known as the "Kim\'s Game" technique, celebrated in childhood education worldwide for fostering active memory.'
     ],
-    keywords: ['whats missing game for kids', 'kims game online', 'short term memory game children', 'missing object puzzle preschool']
+    keywords: ['whats missing game for kids', 'kims game online', 'tray memory game', 'short term memory games for kids', 'missing object puzzle']
+  },
+  'shopping-list': {
+    skills: ['List Memorization', 'Visual Scanning & Filtering', 'Working Memory Retrieval', 'Semantic Categorization'],
+    learningObjective: 'Boosts working memory capacity and focused retrieval by holding a multi-item grocery list in mind while searching crowded store shelves.',
+    howToPlay: [
+      'Read and memorize the grocery items on the notepad before it slips into your pocket.',
+      'Scan the supermarket shelves for the exact items from your list.',
+      'Tap the target items to add them to your shopping cart.',
+      'Avoid distractor items that were not on Mom\'s list to earn a 3-star rating.'
+    ],
+    parentTips: [
+      'Great real-world rehearsal game before going on real grocery store trips with your child.',
+      'Practice mnemonic chunking strategies (e.g., grouping "2 fruits and 1 dairy item").'
+    ],
+    keywords: ['shopping list memory game', 'grocery store game for kids', 'item recall brain game', 'preschool memory list game', 'supermarket memory puzzle']
   },
   'trace-the-path': {
     skills: ['Fine Motor Coordination', 'Visual-Motor Integration', 'Pencil Control', 'Spatial Trajectory Tracking'],

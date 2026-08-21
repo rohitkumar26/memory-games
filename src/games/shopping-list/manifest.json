@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schemas/game-manifest.json",
+  "id": "shopping-list",
+  "name": "Shopping List",
+  "description": "Memorize the grocery list before it slips into your pocket, then find and pick the exact items from the supermarket shelves!",
+  "version": "1.0.0",
+  "engine": "dom-engine",
+  "category": "object-recall",
+  "difficulty": {
+    "min": 1,
+    "max": 5,
+    "default": 1
+  },
+  "ageRange": {
+    "min": 4,
+    "max": 8
+  },
+  "assets": {
+    "images": [],
+    "sounds": [],
+    "fonts": [],
+    "videos": []
+  },
+  "settings": {
+    "rounds": 3,
+    "stores": ["grocery", "bakery", "toystore", "picnic"]
+  }
+}
