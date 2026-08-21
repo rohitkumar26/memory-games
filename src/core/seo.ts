@@ -147,6 +147,21 @@ export const GAME_SEO_REGISTRY: Record<string, GameSEOData> = {
     ],
     keywords: ['animal habitat sorting game', 'preschool science games', 'ocean vs jungle animals game', 'educational biology games for kids']
   },
+  'food-groups': {
+    skills: ['Nutritional Classification', 'Semantic Categorization', 'Healthy Habits Formation', 'Conceptual Grouping'],
+    learningObjective: 'Promotes healthy eating and scientific taxonomy by sorting real-world foods into their 5 nutritional food pyramid groups.',
+    howToPlay: [
+      'Look at the delicious food item featured on the plate.',
+      'Decide whether it belongs to Fruits, Veggies, Grains, Proteins, or Dairy.',
+      'Tap the matching food group basket to sort the food correctly.',
+      'Sort all foods to achieve a Master Nutritionist rating.'
+    ],
+    parentTips: [
+      'Involve your child in sorting real dinner ingredients into food groups while cooking together at home.',
+      'Discuss how each food group helps our bodies grow strong (e.g. calcium in dairy for bones, protein for muscles).'
+    ],
+    keywords: ['food groups sorting game', 'kids nutrition game online', 'healthy eating educational games', 'preschool food classification', 'fruits vs vegetables game']
+  },
   'whats-missing': {
     skills: ['Short-Term Visual Recall', 'Mental Visualization', 'Object Identification', 'Concentration'],
     learningObjective: 'Sharpens acute visual recall and mental imagery by identifying which item was removed from a group.',
