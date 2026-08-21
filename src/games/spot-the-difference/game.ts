@@ -343,8 +343,8 @@ export default {
 
   buildSceneBox(title: string, bgGradient: string, border: string): HTMLElement {
     const box = this.api!.createElement('div', [
-      'bg-gradient-to-br', bgGradient, 'rounded-3xl', 'p-4', 'sm:p-6', 'shadow-xl',
-      'border-4', border, 'flex', 'flex-col', 'items-center', 'w-full'
+      'bg-gradient-to-br', ...bgGradient.split(' '), 'rounded-3xl', 'p-4', 'sm:p-6', 'shadow-xl',
+      'border-4', ...border.split(' '), 'flex', 'flex-col', 'items-center', 'w-full'
     ]);
     const titleEl = this.api!.createElement('span', [
       'text-xs', 'font-black', 'text-gray-600', 'uppercase', 'tracking-wider', 'mb-3'

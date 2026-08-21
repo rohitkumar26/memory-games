@@ -283,7 +283,7 @@ export default {
 
     activeHabitats.forEach(hab => {
       const habBox = this.api!.createElement('button', [
-        'bg-gradient-to-br', hab.bgGradient, 'rounded-3xl', 'p-4', 'border-4', hab.borderClass,
+        'bg-gradient-to-br', ...hab.bgGradient.split(' '), 'rounded-3xl', 'p-4', 'border-4', ...hab.borderClass.split(' '),
         'shadow-lg', 'flex', 'flex-col', 'items-center', 'justify-center', 'gap-1',
         'transition-all', 'duration-150', 'hover:scale-105', 'active:scale-95', 'cursor-pointer'
       ]);

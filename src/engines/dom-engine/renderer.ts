@@ -13,9 +13,19 @@ export class DOMRenderer {
     return this.container;
   }
 
+  private sanitizeClasses(classes: (string | undefined | null)[]): string[] {
+    return classes
+      .filter((c): c is string => typeof c === 'string' && c.trim().length > 0)
+      .flatMap(c => c.trim().split(/\s+/))
+      .filter(Boolean);
+  }
+
   createElement(tag: string, classes: string[] = [], text?: string): HTMLElement {
     const el = document.createElement(tag);
-    el.classList.add(...classes);
+    const validClasses = this.sanitizeClasses(classes);
+    if (validClasses.length > 0) {
+      el.classList.add(...validClasses);
+    }
     if (text) el.textContent = text;
     return el;
   }
@@ -39,11 +49,17 @@ export class DOMRenderer {
   }
 
   addClass(el: HTMLElement, ...classes: string[]): void {
-    el.classList.add(...classes);
+    const validClasses = this.sanitizeClasses(classes);
+    if (validClasses.length > 0) {
+      el.classList.add(...validClasses);
+    }
   }
 
   removeClass(el: HTMLElement, ...classes: string[]): void {
-    el.classList.remove(...classes);
+    const validClasses = this.sanitizeClasses(classes);
+    if (validClasses.length > 0) {
+      el.classList.remove(...validClasses);
+    }
   }
 
   // Kid-friendly visual effects

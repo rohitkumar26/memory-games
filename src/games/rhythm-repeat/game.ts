@@ -353,7 +353,7 @@ export default {
 
     instrument.pads.forEach((pad) => {
       const padBtn = this.api!.createElement('button', [
-        'aspect-square', 'rounded-3xl', 'border-4', pad.color,
+        'aspect-square', 'rounded-3xl', 'border-4', ...pad.color.split(' '),
         'flex', 'flex-col', 'items-center', 'justify-center', 'gap-1',
         'text-white', 'shadow-lg', 'transition-all', 'duration-150',
         'cursor-pointer', 'select-none', 'active:scale-95'
