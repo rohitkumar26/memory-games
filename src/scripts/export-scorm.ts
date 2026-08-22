@@ -205,6 +205,7 @@ function packageGame(gameId: string): void {
       // Read JS and convert any absolute "/_astro/" paths into relative "./_astro/"
       let jsContent = readFileSync(srcPath, 'utf-8');
       jsContent = jsContent.replace(/["']\/_astro\//g, '"./_astro/');
+      jsContent = jsContent.replace(/return\s*["']\/["']\s*\+\s*([a-zA-Z0-9_$]+)/g, 'return "./"+$1');
       writeFileSync(destPath, jsContent, 'utf-8');
     } else {
       copyFileSync(srcPath, destPath);
