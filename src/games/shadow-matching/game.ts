@@ -182,10 +182,14 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(level: number, theme: keyof typeof THEMES): void {
+  startGame(level: number, theme?: keyof typeof THEMES): void {
     if (!this.api || !this.container) return;
 
-    const config = DIFFICULTY_CONFIG[level - 1] || DIFFICULTY_CONFIG[0];
+    this.currentLevel = level || 1;
+    const safeTheme = (theme && THEMES[theme as keyof typeof THEMES]) ? (theme as keyof typeof THEMES) : (this.currentTheme && THEMES[this.currentTheme] ? this.currentTheme : 'animals');
+    this.currentTheme = safeTheme;
+
+    const config = DIFFICULTY_CONFIG[this.currentLevel - 1] || DIFFICULTY_CONFIG[0];
     this.container.innerHTML = '';
     this.shadowSlots = [];
     this.itemCards = [];
@@ -216,7 +220,7 @@ export default {
     this.container.appendChild(header);
 
     // Pick random items for this game
-    const selectedEmojis = shuffle([...THEMES[theme]]).slice(0, config.pairs);
+    const selectedEmojis = shuffle([...THEMES[safeTheme]]).slice(0, config.pairs);
     const shadowOrder = shuffle([...selectedEmojis]);
     const itemOrder = shuffle([...selectedEmojis]);
 

@@ -192,10 +192,14 @@ export default {
 
   // ── Game Logic ──
 
-  startGame(level: number, theme: keyof typeof THEMES): void {
+  startGame(level: number, theme?: keyof typeof THEMES): void {
     if (!this.api || !this.container) return;
 
-    const config = DIFFICULTY_CONFIG[level - 1] || DIFFICULTY_CONFIG[0];
+    this.currentLevel = level || 1;
+    const safeTheme = (theme && THEMES[theme as keyof typeof THEMES]) ? (theme as keyof typeof THEMES) : (this.currentTheme && THEMES[this.currentTheme] ? this.currentTheme : 'animals');
+    this.currentTheme = safeTheme;
+
+    const config = DIFFICULTY_CONFIG[this.currentLevel - 1] || DIFFICULTY_CONFIG[0];
     const pairCount = (config.rows * config.cols) / 2;
 
     this.container.innerHTML = '';
@@ -237,7 +241,7 @@ export default {
       'inline-block', 'px-4', 'py-1', 'bg-kid-purple/20', 'rounded-full',
       'text-kid-purple', 'font-bold', 'text-sm'
     ]);
-    levelText.textContent = `Level ${level}: ${config.label} (${config.rows}×${config.cols})`;
+    levelText.textContent = `Level ${this.currentLevel}: ${config.label} (${config.rows}×${config.cols})`;
     levelBadge.appendChild(levelText);
     this.container.appendChild(levelBadge);
 
@@ -246,7 +250,7 @@ export default {
     board.classList.add('max-w-lg');
 
     // Generate cards
-    const emojis = shuffle([...THEMES[theme]]).slice(0, pairCount);
+    const emojis = shuffle([...THEMES[safeTheme]]).slice(0, pairCount);
     const cardData = shuffle([...emojis, ...emojis]);
     const colors = shuffle([...COLOR_PALETTES.cards]);
 

@@ -177,11 +177,10 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
             resumeContainer.classList.add('hidden');
             if (window.GameEngine) {
               const current = window.GameEngine.getCurrentGame();
-              if (current && typeof current.startGame === 'function') {
-                current.startGame(savedLevel, savedRound);
-              } else {
-                window.GameEngine.start(savedLevel);
+              if (current && typeof current.deserialize === 'function') {
+                current.deserialize({ version: '1.0.0', timestamp: Date.now(), data: { level: savedLevel, round: savedRound } });
               }
+              window.GameEngine.start(savedLevel);
             }
           });
 
