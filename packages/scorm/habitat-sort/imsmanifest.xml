@@ -23,15 +23,15 @@
     <resource identifier="RESOURCE_1" type="webcontent" adlcp:scormtype="sco" href="index.html">
       <file href="index.html"/>
       <file href="scorm-bridge.js"/>
-      <file href="_astro/about.CgRFTi3G.css"/>
+      <file href="_astro/about.DU_OHd83.css"/>
       <file href="_astro/audio.DESBDeeW.js"/>
       <file href="_astro/game.4-lKlGky.js"/>
       <file href="_astro/game.69Fe1Gzr.js"/>
       <file href="_astro/game.81nQKL0d.js"/>
-      <file href="_astro/game.B6FMC7zS.js"/>
       <file href="_astro/game.BuW6hPEj.js"/>
       <file href="_astro/game.CEWO6LVQ.js"/>
       <file href="_astro/game.CjkzPj6_.js"/>
+      <file href="_astro/game.DKYTbkDT.js"/>
       <file href="_astro/game.DLnAt9Xp.js"/>
       <file href="_astro/game.DlyXT1-9.js"/>
       <file href="_astro/game.Dt1egl8r.js"/>
@@ -41,7 +41,7 @@
       <file href="_astro/game.qez1G03x.js"/>
       <file href="_astro/game.U_J7fEmL.js"/>
       <file href="_astro/hoisted.B8HX4Zv8.js"/>
-      <file href="_astro/hoisted.OUrnGvns.js"/>
+      <file href="_astro/hoisted.Dolx5-Cw.js"/>
       <file href="_astro/Score.DPfFm77y.js"/>
       <file href="_astro/Timer.BbhxgdXu.js"/>
     </resource>

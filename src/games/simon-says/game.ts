@@ -172,15 +172,23 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(level: number): void {
+  startGame(level: number, startRound: number = 1): void {
     if (!this.api || !this.container) return;
 
+    this.currentLevel = level;
     const config = DIFFICULTY_CONFIG[level - 1] || DIFFICULTY_CONFIG[0];
     this.container.innerHTML = '';
     this.sequence = [];
     this.userIndex = 0;
     this.isComputerTurn = false;
     this.padElements = [];
+
+    // Pre-populate sequence if resuming a later round
+    if (startRound > 1) {
+      for (let i = 0; i < startRound - 1; i++) {
+        this.sequence.push(Math.floor(Math.random() * 4));
+      }
+    }
 
     // Header
     const header = this.api.createElement('div', [
@@ -199,6 +207,9 @@ export default {
     header.appendChild(backBtn);
 
     this.score = new Score(this.api);
+    if (startRound > 1) {
+      this.score.add((startRound - 1) * 100);
+    }
     header.appendChild(this.score.element);
     this.container.appendChild(header);
 
@@ -208,7 +219,7 @@ export default {
       'inline-block', 'px-6', 'py-2', 'rounded-full', 'font-bold', 'text-base',
       'bg-purple-100', 'text-purple-800', 'shadow-sm', 'transition-all'
     ]);
-    this.statusBadge.textContent = `Round 1 of ${config.target} 🎯`;
+    this.statusBadge.textContent = `Round ${startRound} of ${config.target} 🎯`;
     statusWrapper.appendChild(this.statusBadge);
     this.container.appendChild(statusWrapper);
 
@@ -477,7 +488,8 @@ export default {
       timestamp: Date.now(),
       data: {
         level: this.currentLevel,
-        score: this.score?.getScore()
+        round: Math.max(1, this.sequence?.length || 1),
+        score: this.score?.getScore() || 0
       }
     };
   },
@@ -485,6 +497,10 @@ export default {
   deserialize(state: any): void {
     if (state.data) {
       this.currentLevel = state.data.level || 1;
+      const targetRound = state.data.round || 1;
+      if (targetRound > 1) {
+        this.startGame(this.currentLevel, targetRound);
+      }
     }
   }
 } as GameModule;

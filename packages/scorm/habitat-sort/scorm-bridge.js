@@ -20,9 +20,8 @@ window.SCORMBridge = {
 
     const getSafeScore = function(score) {
       const num = Number(score) || 0;
-      // Standardize score to 0 - 100 range for LMS gradebooks
-      if (num > 100) return Math.min(100, Math.round((num / 200) * 100));
-      return Math.min(100, Math.max(0, num));
+      if (num <= 100) return Math.max(0, Math.round(num));
+      return Math.min(100, Math.max(0, Math.round((num / 1000) * 100)));
     };
 
     return {
@@ -59,13 +58,13 @@ window.SCORMBridge = {
           if (api.v === '2004') {
             api.handle.SetValue('cmi.score.raw', String(normalized));
             api.handle.SetValue('cmi.score.scaled', String(normalized / 100));
-            api.handle.SetValue('cmi.completion_status', normalized >= 50 ? 'completed' : 'incomplete');
+            api.handle.SetValue('cmi.completion_status', normalized >= 100 ? 'completed' : 'incomplete');
             api.handle.Commit('');
           } else {
             api.handle.LMSSetValue('cmi.core.score.min', '0');
             api.handle.LMSSetValue('cmi.core.score.max', '100');
             api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
-            api.handle.LMSSetValue('cmi.core.lesson_status', normalized >= 50 ? 'completed' : 'incomplete');
+            api.handle.LMSSetValue('cmi.core.lesson_status', normalized >= 100 ? 'completed' : 'incomplete');
             api.handle.LMSCommit('');
           }
         } catch(e) {}

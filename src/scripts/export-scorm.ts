@@ -114,7 +114,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
         <div>
           <div class="font-black text-sm sm:text-base flex items-center gap-2">
             <span>Welcome Back!</span>
-            <span class="text-xs bg-amber-400 text-purple-950 font-black px-2 py-0.5 rounded-full">Progress Saved</span>
+            <span class="text-xs bg-amber-400 text-purple-950 font-black px-2 py-0.5 rounded-full">Saved Progress</span>
           </div>
           <div class="text-xs text-purple-200" id="resume-details">
             Resume your previous game session
@@ -123,7 +123,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       </div>
       <div class="flex items-center gap-2">
         <button id="resume-btn" class="px-5 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-purple-950 font-black rounded-2xl text-sm shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5">
-          <span>▶️ Resume Level</span> <span id="resume-level-num">1</span>
+          <span>▶️ Resume</span> <span id="resume-label-text">Round 1</span>
         </button>
         <button id="dismiss-resume-btn" class="px-3 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-2xl transition cursor-pointer" title="Start new game">
           ✕
@@ -144,6 +144,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
     const scoreBadge = document.getElementById('scorm-score-badge');
     let maxDetectedScore = 0;
     let savedLevel = 1;
+    let savedRound = 1;
 
     if (scorm && scorm.initialize()) {
       lmsBadge.textContent = '🟢 Gradebook Connected';
@@ -151,20 +152,25 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       
       // Check for saved state
       const saved = scorm.getSavedState();
-      if (saved && (saved.score || saved.level)) {
-        maxDetectedScore = Number(saved.score) || 0;
+      if (saved && (saved.score || saved.level || saved.round)) {
+        maxDetectedScore = Number(saved.rawPoints || saved.score) || 0;
         savedLevel = Number(saved.level) || 1;
-        if (scoreBadge) scoreBadge.textContent = 'Score: ' + maxDetectedScore;
+        savedRound = Number(saved.round) || 1;
+        if (scoreBadge) scoreBadge.textContent = 'Score: ' + (saved.score || maxDetectedScore);
 
         const resumeContainer = document.getElementById('scorm-resume-container');
         const resumeBtn = document.getElementById('resume-btn');
-        const resumeLevelNum = document.getElementById('resume-level-num');
+        const resumeLabelText = document.getElementById('resume-label-text');
         const resumeDetails = document.getElementById('resume-details');
         const dismissBtn = document.getElementById('dismiss-resume-btn');
 
-        if (resumeContainer && (savedLevel > 1 || maxDetectedScore > 0)) {
-          if (resumeLevelNum) resumeLevelNum.textContent = String(savedLevel);
-          if (resumeDetails) resumeDetails.textContent = 'Level ' + savedLevel + ' • Saved Score: ' + maxDetectedScore;
+        if (resumeContainer && (savedRound > 1 || savedLevel > 1 || maxDetectedScore > 0)) {
+          if (resumeLabelText) {
+            resumeLabelText.textContent = savedRound > 1 ? 'Round ' + savedRound : 'Level ' + savedLevel;
+          }
+          if (resumeDetails) {
+            resumeDetails.textContent = 'Level ' + savedLevel + (savedRound > 1 ? ' • Round ' + savedRound : '') + ' • Grade: ' + (saved.score || 0) + '%';
+          }
           resumeContainer.classList.remove('hidden');
 
           resumeBtn?.addEventListener('click', () => {
@@ -172,7 +178,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
             if (window.GameEngine) {
               const current = window.GameEngine.getCurrentGame();
               if (current && typeof current.startGame === 'function') {
-                current.startGame(savedLevel);
+                current.startGame(savedLevel, savedRound);
               } else {
                 window.GameEngine.start(savedLevel);
               }
@@ -188,7 +194,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       lmsBadge.textContent = '⚪ Standalone Mode';
     }
 
-    // Auto-detect score and level changes from game DOM HUD in real-time
+    // Auto-detect score, rounds, and level changes from game DOM HUD in real-time
     setInterval(() => {
       if (!scorm) return;
       
@@ -203,27 +209,45 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
           const num = parseInt(text, 10);
           if (num > maxDetectedScore && num < 10000) {
             maxDetectedScore = num;
-            if (scoreBadge) scoreBadge.textContent = 'Score: ' + maxDetectedScore;
-            scorm.reportScore(maxDetectedScore);
-            scorm.saveState({ score: maxDetectedScore, level: activeLevel, timestamp: Date.now() });
           }
         }
       });
 
-      // 2. Check for win modal or completion triggers
+      // 2. Detect active Round and Target Rounds (e.g. "Round 4 of 5")
+      let activeRound = 1;
+      let targetRounds = 5;
+      const statusText = document.body.innerText || '';
+      const roundMatch = statusText.match(/Round\\s+(\\d+)\\s+of\\s+(\\d+)/i);
+      if (roundMatch) {
+        activeRound = parseInt(roundMatch[1], 10);
+        targetRounds = parseInt(roundMatch[2], 10);
+      }
+
+      // 3. Check for win modal or completion triggers
       const winModal = document.querySelector('#game-root .modal-overlay, #game-root .win-modal, #game-root [data-win="true"]');
-      const winText = document.body.innerText || '';
-      if (winModal || winText.includes('You Win!') || winText.includes('Great Job!') || winText.includes('Level Complete!') || winText.includes('Super Memory!')) {
-        const finalGrade = Math.max(100, maxDetectedScore);
-        scorm.reportCompletion(finalGrade);
-        scorm.saveState({ score: finalGrade, level: Math.min(5, activeLevel + 1), timestamp: Date.now() });
+      const isWin = winModal || statusText.includes('You Win!') || statusText.includes('Great Job!') || statusText.includes('Level Complete!') || statusText.includes('Super Memory!') || statusText.includes('Master!');
+
+      if (isWin) {
+        if (scoreBadge) scoreBadge.textContent = 'Score: 100';
+        scorm.reportCompletion(100);
+        scorm.saveState({ score: 100, rawPoints: maxDetectedScore, level: Math.min(5, activeLevel + 1), round: 1, timestamp: Date.now() });
+      } else {
+        // Fair ongoing score (0% to 90% while playing)
+        let currentProgress = 0;
+        if (roundMatch && targetRounds > 0) {
+          currentProgress = Math.min(90, Math.round(((activeRound - 1) / targetRounds) * 100));
+        } else if (maxDetectedScore > 0) {
+          currentProgress = Math.min(90, Math.round((maxDetectedScore / 1000) * 100));
+        }
+        if (scoreBadge) scoreBadge.textContent = 'Score: ' + currentProgress;
+        scorm.reportScore(currentProgress);
+        scorm.saveState({ score: currentProgress, rawPoints: maxDetectedScore, level: activeLevel, round: activeRound, timestamp: Date.now() });
       }
     }, 1000);
 
     // Auto-terminate and commit on LMS exit / window unload
     const finalizeSession = () => {
       if (scorm) {
-        scorm.reportScore(maxDetectedScore);
         scorm.terminate();
       }
     };
@@ -307,9 +331,8 @@ window.SCORMBridge = {
 
     const getSafeScore = function(score) {
       const num = Number(score) || 0;
-      // Standardize score to 0 - 100 range for LMS gradebooks
-      if (num > 100) return Math.min(100, Math.round((num / 200) * 100));
-      return Math.min(100, Math.max(0, num));
+      if (num <= 100) return Math.max(0, Math.round(num));
+      return Math.min(100, Math.max(0, Math.round((num / 1000) * 100)));
     };
 
     return {
@@ -346,13 +369,13 @@ window.SCORMBridge = {
           if (api.v === '2004') {
             api.handle.SetValue('cmi.score.raw', String(normalized));
             api.handle.SetValue('cmi.score.scaled', String(normalized / 100));
-            api.handle.SetValue('cmi.completion_status', normalized >= 50 ? 'completed' : 'incomplete');
+            api.handle.SetValue('cmi.completion_status', normalized >= 100 ? 'completed' : 'incomplete');
             api.handle.Commit('');
           } else {
             api.handle.LMSSetValue('cmi.core.score.min', '0');
             api.handle.LMSSetValue('cmi.core.score.max', '100');
             api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
-            api.handle.LMSSetValue('cmi.core.lesson_status', normalized >= 50 ? 'completed' : 'incomplete');
+            api.handle.LMSSetValue('cmi.core.lesson_status', normalized >= 100 ? 'completed' : 'incomplete');
             api.handle.LMSCommit('');
           }
         } catch(e) {}
