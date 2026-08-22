@@ -510,13 +510,34 @@ export default {
     `;
     modal.appendChild(stats);
 
+    const btnCol = this.api.createElement('div', ['flex', 'flex-col', 'gap-3']);
+
+    if (this.currentLevel < 5) {
+      const nextLevelNum = this.currentLevel + 1;
+      const nextBtn = this.api.createElement('button', [
+        'w-full', 'py-3.5', 'bg-gradient-to-r', 'from-emerald-500', 'to-teal-500',
+        'text-white', 'font-black', 'text-base', 'rounded-2xl', 'shadow-lg',
+        'hover:scale-105', 'active:scale-95', 'transition-all', 'cursor-pointer',
+        'flex', 'items-center', 'justify-center', 'gap-2'
+      ]);
+      nextBtn.innerHTML = `<span>🚀 Next Level ${nextLevelNum}</span> <span>→</span>`;
+      this.api.onTap(nextBtn, () => {
+        this.api?.playSound('click');
+        overlay.remove();
+        this.currentModal = null;
+        this.currentRound = 1;
+        this.startGame(nextLevelNum, this.currentThemeIdx);
+      });
+      btnCol.appendChild(nextBtn);
+    }
+
     const btnRow = this.api.createElement('div', ['flex', 'gap-3', 'justify-center']);
 
     const replayBtn = this.api.createElement('button', [
-      'px-6', 'py-3', 'bg-amber-500', 'text-white', 'font-bold', 'rounded-2xl',
+      'flex-1', 'py-3', 'bg-amber-500', 'text-white', 'font-bold', 'rounded-2xl',
       'hover:scale-105', 'active:scale-95', 'transition', 'cursor-pointer'
     ]);
-    replayBtn.textContent = '🔄 Play Again';
+    replayBtn.textContent = '🔄 Replay';
     this.api.onTap(replayBtn, () => {
       this.api?.playSound('click');
       overlay.remove();
@@ -527,7 +548,7 @@ export default {
     btnRow.appendChild(replayBtn);
 
     const menuBtn = this.api.createElement('button', [
-      'px-6', 'py-3', 'bg-gray-100', 'text-gray-600', 'font-bold', 'rounded-2xl',
+      'flex-1', 'py-3', 'bg-gray-100', 'text-gray-600', 'font-bold', 'rounded-2xl',
       'hover:bg-gray-200', 'transition', 'cursor-pointer'
     ]);
     menuBtn.textContent = '🏠 Menu';
@@ -539,7 +560,8 @@ export default {
     });
     btnRow.appendChild(menuBtn);
 
-    modal.appendChild(btnRow);
+    btnCol.appendChild(btnRow);
+    modal.appendChild(btnCol);
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
   },

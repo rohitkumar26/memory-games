@@ -521,13 +521,31 @@ export default {
     `;
     modal.appendChild(stats);
 
+    const btnCol = this.api.createElement('div', ['flex', 'flex-col', 'gap-3']);
+
+    const nextBtn = this.api.createElement('button', [
+      'w-full', 'py-3.5', 'bg-gradient-to-r', 'from-pink-500', 'to-purple-600',
+      'text-white', 'font-black', 'text-base', 'rounded-2xl', 'shadow-lg',
+      'hover:scale-105', 'active:scale-95', 'transition-all', 'cursor-pointer',
+      'flex', 'items-center', 'justify-center', 'gap-2'
+    ]);
+    nextBtn.innerHTML = `<span>🚀 Next Shape</span> <span>→</span>`;
+    this.api.onTap(nextBtn, () => {
+      this.api?.playSound('click');
+      overlay.remove();
+      this.currentModal = null;
+      this.currentShapeIdx = (this.currentShapeIdx + 1) % SHAPE_PRESETS.length;
+      this.startGame(this.currentShapeIdx);
+    });
+    btnCol.appendChild(nextBtn);
+
     const btnRow = this.api.createElement('div', ['flex', 'gap-3', 'justify-center']);
 
     const replayBtn = this.api.createElement('button', [
-      'px-6', 'py-3', 'bg-pink-500', 'text-white', 'font-bold', 'rounded-2xl',
+      'flex-1', 'py-3', 'bg-pink-500', 'text-white', 'font-bold', 'rounded-2xl',
       'hover:scale-105', 'active:scale-95', 'transition', 'cursor-pointer'
     ]);
-    replayBtn.textContent = '🔄 Play Again';
+    replayBtn.textContent = '🔄 Replay';
     this.api.onTap(replayBtn, () => {
       this.api?.playSound('click');
       overlay.remove();
@@ -536,21 +554,21 @@ export default {
     });
     btnRow.appendChild(replayBtn);
 
-    const nextBtn = this.api.createElement('button', [
-      'px-6', 'py-3', 'bg-purple-600', 'text-white', 'font-bold', 'rounded-2xl',
-      'hover:scale-105', 'active:scale-95', 'transition', 'cursor-pointer'
+    const menuBtn = this.api.createElement('button', [
+      'flex-1', 'py-3', 'bg-gray-100', 'text-gray-600', 'font-bold', 'rounded-2xl',
+      'hover:bg-gray-200', 'transition', 'cursor-pointer'
     ]);
-    nextBtn.textContent = 'Next Shape ⏭️';
-    this.api.onTap(nextBtn, () => {
+    menuBtn.textContent = '🏠 Menu';
+    this.api.onTap(menuBtn, () => {
       this.api?.playSound('click');
       overlay.remove();
       this.currentModal = null;
-      this.currentShapeIdx = (this.currentShapeIdx + 1) % SHAPE_PRESETS.length;
-      this.startGame(this.currentShapeIdx);
+      this.buildMenu();
     });
-    btnRow.appendChild(nextBtn);
+    btnRow.appendChild(menuBtn);
 
-    modal.appendChild(btnRow);
+    btnCol.appendChild(btnRow);
+    modal.appendChild(btnCol);
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
   },
