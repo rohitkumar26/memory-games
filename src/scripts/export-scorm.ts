@@ -185,11 +185,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
           resumeBtn?.addEventListener('click', () => {
             resumeContainer.classList.add('hidden');
             if (window.GameEngine) {
-              const current = window.GameEngine.getCurrentGame();
-              if (current && typeof current.deserialize === 'function') {
-                current.deserialize({ version: '1.0.0', timestamp: Date.now(), data: { level: savedLevel, round: savedRound } });
-              }
-              window.GameEngine.start(savedLevel);
+              window.GameEngine.start(savedLevel, savedRound);
             }
           });
 

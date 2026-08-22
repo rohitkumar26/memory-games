@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="KIDS_MEMORY_DRAW_THE_SHAPE_1787389530586" version="1.2"
+<manifest identifier="KIDS_MEMORY_DRAW_THE_SHAPE_1787389880998" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p1p2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,8 +10,8 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="KIDS_MEMORY_DRAW_THE_SHAPE_1787389530586_ORG">
-    <organization identifier="KIDS_MEMORY_DRAW_THE_SHAPE_1787389530586_ORG">
+  <organizations default="KIDS_MEMORY_DRAW_THE_SHAPE_1787389880998_ORG">
+    <organization identifier="KIDS_MEMORY_DRAW_THE_SHAPE_1787389880998_ORG">
       <title>Draw the Shape — Classroom SCORM Edition</title>
       <item identifier="ITEM_1" identifierref="RES_DRAW_THE_SHAPE">
         <title>Draw the Shape</title>
@@ -28,8 +28,8 @@
       <file href="_astro/audio.DESBDeeW.js"/>
       <file href="_astro/game.4-lKlGky.js"/>
       <file href="_astro/game.81nQKL0d.js"/>
-      <file href="_astro/game.CEWO6LVQ.js"/>
       <file href="_astro/game.CjkzPj6_.js"/>
+      <file href="_astro/game.CkaI-DQ5.js"/>
       <file href="_astro/game.DKYTbkDT.js"/>
       <file href="_astro/game.DkZR31c1.js"/>
       <file href="_astro/game.DLnAt9Xp.js"/>
@@ -42,7 +42,7 @@
       <file href="_astro/game.U_J7fEmL.js"/>
       <file href="_astro/game.x8YMF0AX.js"/>
       <file href="_astro/hoisted.B8HX4Zv8.js"/>
-      <file href="_astro/hoisted.F5OteOy8.js"/>
+      <file href="_astro/hoisted.DRnlZqM3.js"/>
       <file href="_astro/Score.DPfFm77y.js"/>
       <file href="_astro/Timer.BbhxgdXu.js"/>
     </resource>

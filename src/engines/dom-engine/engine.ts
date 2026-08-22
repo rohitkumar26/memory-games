@@ -99,15 +99,16 @@ export class DOMEngine {
     }
   }
 
-  async start(level?: number): Promise<void> {
+  async start(level?: number, round?: number): Promise<void> {
     if (level && this.currentGame) {
-      if (typeof this.currentGame.deserialize === 'function') {
-        this.currentGame.deserialize({ version: '1.0.0', timestamp: Date.now(), data: { level } });
-      }
       const g = this.currentGame as any;
+      if (typeof this.currentGame.deserialize === 'function') {
+        const targetRound = round || g.currentRound || g.savedRound || 1;
+        this.currentGame.deserialize({ version: '1.0.0', timestamp: Date.now(), data: { level, round: targetRound } });
+      }
       if (typeof g.startGame === 'function') {
         g.isPlaying = true;
-        g.startGame(level, g.currentTheme || g.currentPackIdx || g.currentShapeIdx || 0);
+        g.startGame(level, g.currentTheme || g.currentPackIdx || g.currentShapeIdx || g.currentMode || g.currentStoreIdx || g.currentThemeIdx || 0);
         return;
       }
     }

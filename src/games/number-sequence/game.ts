@@ -204,6 +204,9 @@ export default {
     header.appendChild(backBtn);
 
     this.score = new Score(this.api);
+    if (this.currentRound > 1) {
+      this.score.add((this.currentRound - 1) * 100);
+    }
     header.appendChild(this.score.element);
 
     this.timer = new Timer(this.api);
