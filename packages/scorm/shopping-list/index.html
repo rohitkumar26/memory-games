@@ -20,6 +20,34 @@
     </div>
   </div>
 
+  <!-- Resume Progress Banner (Appears if saved progress exists) -->
+  <div id="scorm-resume-container" class="w-full max-w-4xl mx-auto px-4 pt-3 hidden">
+    <div class="bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 text-white p-4 rounded-3xl shadow-xl flex flex-wrap items-center justify-between gap-4 border border-purple-400/30">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-2xl shadow-inner">
+          💾
+        </div>
+        <div>
+          <div class="font-black text-sm sm:text-base flex items-center gap-2">
+            <span>Welcome Back!</span>
+            <span class="text-xs bg-amber-400 text-purple-950 font-black px-2 py-0.5 rounded-full">Progress Saved</span>
+          </div>
+          <div class="text-xs text-purple-200" id="resume-details">
+            Resume your previous game session
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="resume-btn" class="px-5 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-purple-950 font-black rounded-2xl text-sm shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5">
+          <span>▶️ Resume Level</span> <span id="resume-level-num">1</span>
+        </button>
+        <button id="dismiss-resume-btn" class="px-3 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-2xl transition cursor-pointer" title="Start new game">
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="flex-1 flex flex-col w-full max-w-4xl mx-auto p-4">
     <div id="game-root" class="w-full flex-1 flex flex-col" data-game-id="shopping-list"></div>
   </div>
@@ -31,6 +59,7 @@
     const lmsBadge = document.getElementById('lms-status');
     const scoreBadge = document.getElementById('scorm-score-badge');
     let maxDetectedScore = 0;
+    let savedLevel = 1;
 
     if (scorm && scorm.initialize()) {
       lmsBadge.textContent = '🟢 Gradebook Connected';
@@ -38,18 +67,50 @@
       
       // Check for saved state
       const saved = scorm.getSavedState();
-      if (saved && saved.score) {
-        maxDetectedScore = Number(saved.score);
+      if (saved && (saved.score || saved.level)) {
+        maxDetectedScore = Number(saved.score) || 0;
+        savedLevel = Number(saved.level) || 1;
         if (scoreBadge) scoreBadge.textContent = 'Score: ' + maxDetectedScore;
+
+        const resumeContainer = document.getElementById('scorm-resume-container');
+        const resumeBtn = document.getElementById('resume-btn');
+        const resumeLevelNum = document.getElementById('resume-level-num');
+        const resumeDetails = document.getElementById('resume-details');
+        const dismissBtn = document.getElementById('dismiss-resume-btn');
+
+        if (resumeContainer && (savedLevel > 1 || maxDetectedScore > 0)) {
+          if (resumeLevelNum) resumeLevelNum.textContent = String(savedLevel);
+          if (resumeDetails) resumeDetails.textContent = 'Level ' + savedLevel + ' • Saved Score: ' + maxDetectedScore;
+          resumeContainer.classList.remove('hidden');
+
+          resumeBtn?.addEventListener('click', () => {
+            resumeContainer.classList.add('hidden');
+            if (window.GameEngine) {
+              const current = window.GameEngine.getCurrentGame();
+              if (current && typeof current.startGame === 'function') {
+                current.startGame(savedLevel);
+              } else {
+                window.GameEngine.start(savedLevel);
+              }
+            }
+          });
+
+          dismissBtn?.addEventListener('click', () => {
+            resumeContainer.classList.add('hidden');
+          });
+        }
       }
     } else {
       lmsBadge.textContent = '⚪ Standalone Mode';
     }
 
-    // Auto-detect score changes from game DOM HUD in real-time
+    // Auto-detect score and level changes from game DOM HUD in real-time
     setInterval(() => {
       if (!scorm) return;
       
+      const current = window.GameEngine ? window.GameEngine.getCurrentGame() : null;
+      let activeLevel = current && current.currentLevel ? current.currentLevel : savedLevel;
+
       // 1. Look for score numbers in HUD
       const starSpans = Array.from(document.querySelectorAll('#game-root span, #game-root div'));
       starSpans.forEach(el => {
@@ -60,7 +121,7 @@
             maxDetectedScore = num;
             if (scoreBadge) scoreBadge.textContent = 'Score: ' + maxDetectedScore;
             scorm.reportScore(maxDetectedScore);
-            scorm.saveState({ score: maxDetectedScore, timestamp: Date.now() });
+            scorm.saveState({ score: maxDetectedScore, level: activeLevel, timestamp: Date.now() });
           }
         }
       });
@@ -71,6 +132,7 @@
       if (winModal || winText.includes('You Win!') || winText.includes('Great Job!') || winText.includes('Level Complete!') || winText.includes('Super Memory!')) {
         const finalGrade = Math.max(100, maxDetectedScore);
         scorm.reportCompletion(finalGrade);
+        scorm.saveState({ score: finalGrade, level: Math.min(5, activeLevel + 1), timestamp: Date.now() });
       }
     }, 1000);
 
