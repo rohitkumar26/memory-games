@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="KIDS_MEMORY_SIMON_SAYS_1787413499086" version="1.2"
+<manifest identifier="KIDS_MEMORY_SIMON_SAYS_1787415592540" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p1p2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,8 +10,8 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="KIDS_MEMORY_SIMON_SAYS_1787413499086_ORG">
-    <organization identifier="KIDS_MEMORY_SIMON_SAYS_1787413499086_ORG">
+  <organizations default="KIDS_MEMORY_SIMON_SAYS_1787415592540_ORG">
+    <organization identifier="KIDS_MEMORY_SIMON_SAYS_1787415592540_ORG">
       <title>Simon Says — Classroom SCORM Edition</title>
       <item identifier="ITEM_1" identifierref="RES_SIMON_SAYS">
         <title>Simon Says</title>
@@ -25,23 +25,23 @@
       <file href="scorm-bridge.js"/>
       <file href="_astro/about.Beqn1vYX.css"/>
       <file href="_astro/audio.DESBDeeW.js"/>
-      <file href="_astro/game.9dT19w_f.js"/>
-      <file href="_astro/game.B4g8ePMh.js"/>
-      <file href="_astro/game.BMG2lHLL.js"/>
-      <file href="_astro/game.BMkEzakU.js"/>
-      <file href="_astro/game.BP9UhWFR.js"/>
-      <file href="_astro/game.BULjqpL5.js"/>
-      <file href="_astro/game.BXnBr_Im.js"/>
-      <file href="_astro/game.CPmb4Dpi.js"/>
-      <file href="_astro/game.CtmD1bwJ.js"/>
-      <file href="_astro/game.DkQ2hVP-.js"/>
-      <file href="_astro/game.DTdCvvvU.js"/>
-      <file href="_astro/game.DUz1G488.js"/>
-      <file href="_astro/game.fa6hBOp4.js"/>
-      <file href="_astro/game.uRy74RO6.js"/>
-      <file href="_astro/game.WSOCTBRX.js"/>
+      <file href="_astro/game.6IVERwj4.js"/>
+      <file href="_astro/game.7Th7hnmW.js"/>
+      <file href="_astro/game.9pUF-rgo.js"/>
+      <file href="_astro/game.B0LrOWP-.js"/>
+      <file href="_astro/game.Ba8BH6uN.js"/>
+      <file href="_astro/game.BEojqUsa.js"/>
+      <file href="_astro/game.BM43rH_c.js"/>
+      <file href="_astro/game.BnqieCzz.js"/>
+      <file href="_astro/game.CdnzukMk.js"/>
+      <file href="_astro/game.ClzOJ4La.js"/>
+      <file href="_astro/game.CmB_wQW0.js"/>
+      <file href="_astro/game.D4zZ0pd7.js"/>
+      <file href="_astro/game.DvLNyr1p.js"/>
+      <file href="_astro/game.hKSl7DsK.js"/>
+      <file href="_astro/game.umPadErL.js"/>
       <file href="_astro/hoisted.B8HX4Zv8.js"/>
-      <file href="_astro/hoisted.CYeP8PRX.js"/>
+      <file href="_astro/hoisted.CSPBDrux.js"/>
       <file href="_astro/Score.DvgZ8nSG.js"/>
       <file href="_astro/Timer.BbhxgdXu.js"/>
     </resource>

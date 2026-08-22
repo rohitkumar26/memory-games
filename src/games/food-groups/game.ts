@@ -141,8 +141,9 @@ export default {
     this.buildMenu();
   },
 
-  start(): void {
+  start(level?: number): void {
     this.isPlaying = true;
+    if (typeof level === 'number') this.currentLevel = level;
     this.startGame(this.currentLevel);
   },
 

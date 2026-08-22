@@ -57,9 +57,10 @@ export default {
     this.buildMenu();
   },
 
-  start(): void {
+  start(level?: number, round?: number): void {
     this.isPlaying = true;
-    this.currentRound = 1;
+    if (typeof level === 'number') this.currentLevel = level;
+    if (typeof round === 'number') this.currentRound = round;
     this.startGame(this.currentLevel, this.currentThemeIdx);
   },
 

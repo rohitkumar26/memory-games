@@ -175,7 +175,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       const resumeDetails = document.getElementById('resume-details');
       const dismissBtn = document.getElementById('dismiss-resume-btn');
 
-      if (resumeContainer && (savedRound > 1 || savedLevel > 1 || maxDetectedScore > 0 || (saved.score && saved.score > 0))) {
+      if (resumeContainer && (savedRound > 1 || savedLevel > 1 || maxDetectedScore > 0 || (saved.score !== undefined && saved.score > 0) || saved.timestamp)) {
         if (resumeLabelText) {
           resumeLabelText.textContent = savedRound > 1 ? 'Round ' + savedRound : 'Level ' + savedLevel;
         }

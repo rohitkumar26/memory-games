@@ -133,8 +133,12 @@ export default {
     this.buildMenu();
   },
 
-  start(): void {
+  start(level?: number): void {
     this.isPlaying = true;
+    if (typeof level === 'number') {
+      const idx = (level > 0 && level <= SHAPE_PRESETS.length) ? level - 1 : level;
+      this.currentShapeIdx = (idx >= 0 && idx < SHAPE_PRESETS.length) ? idx : 0;
+    }
     this.startGame(this.currentShapeIdx);
   },
 
@@ -336,17 +340,22 @@ export default {
       }
 
       const rect = canvas.getBoundingClientRect();
+      const currentW = rect.width || w;
+      const currentH = rect.height || h;
       const tapX = clientX - rect.left;
       const tapY = clientY - rect.top;
 
       const targetDot = this.dots.find(d => d.num === this.nextDotNum);
       if (!targetDot) return;
 
-      const dotX = targetDot.nx * w;
-      const dotY = targetDot.ny * h;
+      const dotX = targetDot.nx * currentW;
+      const dotY = targetDot.ny * currentH;
       const dist = Math.hypot(tapX - dotX, tapY - dotY);
 
-      if (dist < 40) {
+      // Generous hit box (at least 45px or 8% of screen) for kids' fingers & mice
+      const hitRadius = Math.max(45, Math.min(70, currentW * 0.1));
+
+      if (dist < hitRadius) {
         // Correct dot tapped!
         targetDot.connected = true;
         this.api.playSound('flip');
@@ -369,9 +378,6 @@ export default {
           }
           this.handleWin();
         }
-      } else {
-        // Tapped elsewhere or wrong dot
-        this.api.playSound('error');
       }
     };
 
@@ -589,14 +595,16 @@ export default {
       version: '1.0.0',
       timestamp: Date.now(),
       data: {
-        shapeIdx: this.currentShapeIdx
+        shapeIdx: this.currentShapeIdx,
+        level: this.currentShapeIdx + 1
       }
     };
   },
 
   deserialize(state: any): void {
     if (state.data) {
-      this.currentShapeIdx = state.data.shapeIdx || 0;
+      this.currentShapeIdx = typeof state.data.shapeIdx === 'number' ? state.data.shapeIdx : (state.data.level ? state.data.level - 1 : 0);
+      this.currentLevel = this.currentShapeIdx + 1;
     }
   }
 } as GameModule;
