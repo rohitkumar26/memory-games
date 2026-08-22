@@ -478,23 +478,11 @@ window.SCORMBridge = {
 
   // 6. Create standard SCORM zip using AdmZip
   const zipPath = join(OUT_DIR, `${gameId}-scorm-v1.0.zip`);
-  const altZipPath = join(OUT_DIR, `${gameId}-scorm.zip`);
   try {
     const zip = new AdmZip();
     zip.addLocalFolder(pkgDir);
-    try {
-      zip.writeZip(zipPath);
-      console.log(`✅ Created SCORM zip: ${zipPath}`);
-    } catch (e: any) {
-      if (e.code === 'EBUSY') {
-        console.warn(`⚠️ ${gameId}-scorm-v1.0.zip is locked by another program. Writing to ${gameId}-scorm.zip...`);
-      }
-    }
-    // Also write clean-named copy
-    try {
-      zip.writeZip(altZipPath);
-      console.log(`✅ Created SCORM zip: ${altZipPath}`);
-    } catch (e) {}
+    zip.writeZip(zipPath);
+    console.log(`✅ Created SCORM zip: ${zipPath}`);
   } catch (err) {
     console.error(`Error creating zip for ${gameId}:`, err);
   }

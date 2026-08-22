@@ -30,9 +30,7 @@ describe('SCORM Package Integrity & Cross-Contamination Prevention', () => {
       const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
 
       // Check zip file existence
-      const zipPath = existsSync(join(SCORM_DIR, `${gameId}-scorm.zip`))
-        ? join(SCORM_DIR, `${gameId}-scorm.zip`)
-        : join(SCORM_DIR, `${gameId}-scorm-v1.0.zip`);
+      const zipPath = join(SCORM_DIR, `${gameId}-scorm-v1.0.zip`);
 
       it(`has a valid generated .zip archive: ${gameId}`, () => {
         expect(existsSync(zipPath), `SCORM zip archive must exist for ${gameId}`).toBe(true);
