@@ -3,7 +3,7 @@ import { join, resolve } from 'path';
 import { execSync } from 'child_process';
 
 const GAMES_DIR = resolve(process.cwd(), 'src/games');
-const OUT_DIR = resolve(process.cwd(), 'dist/scorm-packages');
+const OUT_DIR = resolve(process.cwd(), 'packages/scorm');
 
 function getGameList(): string[] {
   return readdirSync(GAMES_DIR).filter(name => {

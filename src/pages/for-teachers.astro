@@ -125,10 +125,31 @@ const faqs = [
 ---
 
 <GameShell title="🎓 SCORM Packages for Teachers & Schools — Kids Memory Games">
-  <div class="max-w-6xl mx-auto px-4 py-8 sm:py-12">
-    
-    <!-- Hero Banner -->
-    <div class="text-center max-w-3xl mx-auto mb-14">
+  <div class="min-h-screen flex flex-col justify-between">
+    <!-- Sticky Top Navigation Bar -->
+    <nav class="flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-sm border-b border-purple-100">
+      <a href="/" class="flex items-center gap-2 text-gray-700 hover:text-purple-700 transition-all font-black group">
+        <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Back to Home</span>
+      </a>
+      <div class="flex items-center gap-6">
+        <div class="hidden sm:flex items-center gap-4 text-sm font-bold text-gray-600">
+          <a href="/" class="hover:text-purple-600 transition">🎮 All Games</a>
+          <a href="/about" class="hover:text-purple-600 transition">About & Science</a>
+          <a href="/contact" class="hover:text-purple-600 transition">Contact</a>
+        </div>
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-purple-100 text-purple-800 rounded-full font-black text-xs">
+          <span>🎓</span>
+          <span>Educator Hub</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 py-8 sm:py-12 flex-1">
+      
+      <!-- Hero Banner -->
+      <div class="text-center max-w-3xl mx-auto mb-14">
       <span class="px-4 py-1.5 bg-purple-100 text-purple-700 rounded-full font-bold text-sm uppercase tracking-wider inline-block mb-4">
         🏫 Educator & LMS Curriculum Edition
       </span>
@@ -313,6 +334,19 @@ const faqs = [
         </a>
       </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 pt-8 border-t border-purple-100/80 text-center text-xs text-gray-500 flex flex-col gap-3 pb-8">
+      <div class="flex flex-wrap justify-center gap-6 font-bold text-gray-600">
+        <a href="/" class="hover:text-purple-700">All Games</a>
+        <a href="/for-teachers" class="text-purple-700 font-black">For Teachers</a>
+        <a href="/about" class="hover:text-purple-700">About & Science</a>
+        <a href="/privacy" class="hover:text-purple-700">Privacy Policy</a>
+        <a href="/terms" class="hover:text-purple-700">Terms of Service</a>
+        <a href="/contact" class="hover:text-purple-700">Contact Us</a>
+      </div>
+      <p>© 2026 Kids Memory Games Arcade • Ad-Free & COPPA/FERPA Compliant</p>
+    </footer>
 
   </div>
 </GameShell>
