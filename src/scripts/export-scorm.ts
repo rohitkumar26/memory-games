@@ -158,44 +158,45 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       lmsBadge.textContent = '🟢 Gradebook Connected';
       lmsBadge.className = 'bg-emerald-700 text-white px-2.5 py-0.5 rounded text-xs font-black';
       
-      // Check for saved state
-      const saved = scorm.getSavedState();
-      if (saved && (saved.score || saved.level || saved.round)) {
-        maxDetectedScore = Number(saved.rawPoints || saved.score) || 0;
-        savedLevel = Number(saved.level) || 1;
-        savedRound = Number(saved.round) || 1;
-        if (scoreBadge) scoreBadge.textContent = 'Score: ' + (saved.score || maxDetectedScore);
+    // Check for saved state
+    const saved = scorm ? scorm.getSavedState() : null;
+    if (saved && (saved.score !== undefined || saved.level || saved.round || saved.rawPoints)) {
+      maxDetectedScore = Number(saved.rawPoints || saved.score) || 0;
+      savedLevel = Number(saved.level) || 1;
+      savedRound = Number(saved.round) || 1;
+      if (scoreBadge) scoreBadge.textContent = 'Score: ' + (maxDetectedScore || saved.score || 0);
 
-        const resumeContainer = document.getElementById('scorm-resume-container');
-        const resumeBtn = document.getElementById('resume-btn');
-        const resumeLabelText = document.getElementById('resume-label-text');
-        const resumeDetails = document.getElementById('resume-details');
-        const dismissBtn = document.getElementById('dismiss-resume-btn');
+      const resumeContainer = document.getElementById('scorm-resume-container');
+      const resumeBtn = document.getElementById('resume-btn');
+      const resumeLabelText = document.getElementById('resume-label-text');
+      const resumeDetails = document.getElementById('resume-details');
+      const dismissBtn = document.getElementById('dismiss-resume-btn');
 
-        if (resumeContainer && (savedRound > 1 || savedLevel > 1 || maxDetectedScore > 0)) {
-          if (resumeLabelText) {
-            resumeLabelText.textContent = savedRound > 1 ? 'Round ' + savedRound : 'Level ' + savedLevel;
-          }
-          if (resumeDetails) {
-            resumeDetails.textContent = 'Level ' + savedLevel + (savedRound > 1 ? ' • Round ' + savedRound : '') + ' • Grade: ' + (saved.score || 0) + '%';
-          }
-          resumeContainer.classList.remove('hidden');
-
-          resumeBtn?.addEventListener('click', () => {
-            resumeContainer.classList.add('hidden');
-            if (window.GameEngine) {
-              window.GameEngine.start(savedLevel, savedRound);
-            }
-          });
-
-          dismissBtn?.addEventListener('click', () => {
-            resumeContainer.classList.add('hidden');
-          });
+      if (resumeContainer && (savedRound > 1 || savedLevel > 1 || maxDetectedScore > 0 || (saved.score && saved.score > 0))) {
+        if (resumeLabelText) {
+          resumeLabelText.textContent = savedRound > 1 ? 'Round ' + savedRound : 'Level ' + savedLevel;
         }
+        if (resumeDetails) {
+          resumeDetails.textContent = 'Level ' + savedLevel + (savedRound > 1 ? ' • Round ' + savedRound : '') + ' • Grade: ' + (saved.score || 0) + '%';
+        }
+        resumeContainer.classList.remove('hidden');
+
+        resumeBtn?.addEventListener('click', () => {
+          resumeContainer.classList.add('hidden');
+          if (window.GameEngine) {
+            window.GameEngine.start(savedLevel, savedRound);
+          }
+        });
+
+        dismissBtn?.addEventListener('click', () => {
+          resumeContainer.classList.add('hidden');
+        });
       }
-    } else {
-      lmsBadge.textContent = '⚪ Standalone Mode';
     }
+
+    let lastReportedScore = -1;
+    let lastReportedLevel = -1;
+    let lastReportedRound = -1;
 
     // Auto-detect score, rounds, and level changes in real-time
     setInterval(() => {
@@ -231,7 +232,17 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       }
 
       const lmsScore = progressPct > 0 ? progressPct : (displayPoints > 0 ? Math.min(90, Math.round((displayPoints / 300) * 100)) : 0);
-      scorm.saveState({ score: lmsScore, rawPoints: displayPoints, level: activeLevel, round: activeRound, timestamp: Date.now() });
+
+      if (lmsScore !== lastReportedScore || activeLevel !== lastReportedLevel || activeRound !== lastReportedRound || displayPoints !== maxDetectedScore) {
+        lastReportedScore = lmsScore;
+        lastReportedLevel = activeLevel;
+        lastReportedRound = activeRound;
+        maxDetectedScore = displayPoints;
+        if (lmsScore > 0) {
+          scorm.reportScore(lmsScore);
+        }
+        scorm.saveState({ score: lmsScore, rawPoints: displayPoints, level: activeLevel, round: activeRound, timestamp: Date.now() });
+      }
     }, 500);
 
     // Auto-terminate and commit on LMS exit / window unload
@@ -423,9 +434,10 @@ window.SCORMBridge = {
         } catch(e) {}
       },
       saveState: function(stateObj) {
-        if (!api || isTerminated) return;
         try {
           const str = JSON.stringify(stateObj);
+          try { localStorage.setItem('kids_scorm_state_' + '${manifest.id}', str); } catch(e) {}
+          if (!api || isTerminated) return;
           if (api.v === '2004') {
             api.handle.SetValue('cmi.suspend_data', str);
             api.handle.SetValue('cmi.exit', 'suspend');
@@ -438,12 +450,15 @@ window.SCORMBridge = {
         } catch(e) {}
       },
       getSavedState: function() {
-        if (!api) return null;
         try {
-          const data = api.v === '2004' ? api.handle.GetValue('cmi.suspend_data') : api.handle.LMSGetValue('cmi.suspend_data');
-          if (data && data.startsWith('{')) {
-            return JSON.parse(data);
+          const data = api ? (api.v === '2004' ? api.handle.GetValue('cmi.suspend_data') : api.handle.LMSGetValue('cmi.suspend_data')) : null;
+          if (data && typeof data === 'string' && data.trim().startsWith('{')) {
+            return JSON.parse(data.trim());
           }
+        } catch(e) {}
+        try {
+          const local = localStorage.getItem('kids_scorm_state_' + '${manifest.id}');
+          if (local) return JSON.parse(local);
         } catch(e) {}
         return null;
       },

@@ -121,9 +121,10 @@ window.SCORMBridge = {
         } catch(e) {}
       },
       saveState: function(stateObj) {
-        if (!api || isTerminated) return;
         try {
           const str = JSON.stringify(stateObj);
+          try { localStorage.setItem('kids_scorm_state_' + 'number-sequence', str); } catch(e) {}
+          if (!api || isTerminated) return;
           if (api.v === '2004') {
             api.handle.SetValue('cmi.suspend_data', str);
             api.handle.SetValue('cmi.exit', 'suspend');
@@ -136,12 +137,15 @@ window.SCORMBridge = {
         } catch(e) {}
       },
       getSavedState: function() {
-        if (!api) return null;
         try {
-          const data = api.v === '2004' ? api.handle.GetValue('cmi.suspend_data') : api.handle.LMSGetValue('cmi.suspend_data');
-          if (data && data.startsWith('{')) {
-            return JSON.parse(data);
+          const data = api ? (api.v === '2004' ? api.handle.GetValue('cmi.suspend_data') : api.handle.LMSGetValue('cmi.suspend_data')) : null;
+          if (data && typeof data === 'string' && data.trim().startsWith('{')) {
+            return JSON.parse(data.trim());
           }
+        } catch(e) {}
+        try {
+          const local = localStorage.getItem('kids_scorm_state_' + 'number-sequence');
+          if (local) return JSON.parse(local);
         } catch(e) {}
         return null;
       },
