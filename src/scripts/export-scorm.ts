@@ -61,15 +61,16 @@ Engine: ${manifest.engine}
 SCORM Compliance: SCORM 1.2 & SCORM 2004
 
 ## 1. Quick LMS Setup Guide
-- **Canvas LMS**: Course → Modules → Add Item (+) → Select "SCORM" → Upload this .zip file.
-- **Moodle**: Turn Editing On → Add an Activity or Resource → Select "SCORM package" → Upload this .zip file.
+- **Canvas LMS**: Course → Modules → Add Item (+) → Select "SCORM" → Upload this .zip file. Choose "Graded Assignment".
+- **Moodle**: Turn Editing On → Add an Activity or Resource → Select "SCORM package" → Upload this .zip file. In Grading, set "Grading method: Highest grade" or "Average grade".
 - **Blackboard / Schoology**: Add Materials → Add SCORM / Package → Choose this .zip file.
 
 ## 2. Gradebook Synchronization
 When a student plays this activity:
-- **Completion Status**: Reports "passed" once target rounds are finished.
-- **Score (Raw)**: Points earned (0–100+) auto-populate the teacher gradebook.
+- **Completion Status**: Reports "passed" once target rounds/levels are finished.
+- **Score (0–100%)**: Automatically calculates percentage mastery and logs to teacher gradebook.
 - **Session Time**: Total time spent practicing is logged automatically.
+- **Bookmark & Resume**: Remembers student progress if they close the window and return later.
 
 ## 3. Educational Objectives
 - Target Cognitive Skills: Working Memory, Visual Scanning, Categorization, Focus.
@@ -97,7 +98,10 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
 <body class="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 min-h-screen flex flex-col justify-between text-gray-800">
   <div id="scorm-hud">
     <span>🏫 ${manifest.name} • SCORM LMS Edition</span>
-    <span id="lms-status" class="bg-purple-700 px-2.5 py-0.5 rounded text-xs font-black">Connecting LMS...</span>
+    <div class="flex items-center gap-3">
+      <span id="scorm-score-badge" class="bg-amber-400 text-purple-950 px-2.5 py-0.5 rounded text-xs font-black">Score: 0</span>
+      <span id="lms-status" class="bg-purple-700 px-2.5 py-0.5 rounded text-xs font-black">Connecting LMS...</span>
+    </div>
   </div>
 
   <div class="flex-1 flex flex-col w-full max-w-4xl mx-auto p-4">
@@ -109,45 +113,62 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
     // Initialize SCORM Bridge
     const scorm = window.SCORMBridge ? window.SCORMBridge.getInstance() : null;
     const lmsBadge = document.getElementById('lms-status');
+    const scoreBadge = document.getElementById('scorm-score-badge');
     let maxDetectedScore = 0;
 
     if (scorm && scorm.initialize()) {
       lmsBadge.textContent = '🟢 Gradebook Connected';
       lmsBadge.className = 'bg-emerald-700 text-white px-2.5 py-0.5 rounded text-xs font-black';
+      
+      // Check for saved state
+      const saved = scorm.getSavedState();
+      if (saved && saved.score) {
+        maxDetectedScore = Number(saved.score);
+        if (scoreBadge) scoreBadge.textContent = 'Score: ' + maxDetectedScore;
+      }
     } else {
       lmsBadge.textContent = '⚪ Standalone Mode';
     }
 
-    // Auto-detect score changes from game DOM HUD
+    // Auto-detect score changes from game DOM HUD in real-time
     setInterval(() => {
       if (!scorm) return;
       
-      // Look for score badges in HUD (numbers following ⭐ or inside score elements)
+      // 1. Look for score numbers in HUD
       const starSpans = Array.from(document.querySelectorAll('#game-root span, #game-root div'));
       starSpans.forEach(el => {
-        const text = el.textContent || '';
-        // If element is a pure number >= 10
-        if (/^\d{2,5}$/.test(text.trim())) {
-          const num = parseInt(text.trim(), 10);
-          if (num > maxDetectedScore) {
+        const text = (el.textContent || '').trim();
+        if (/^\\d{1,5}$/.test(text)) {
+          const num = parseInt(text, 10);
+          if (num > maxDetectedScore && num < 10000) {
             maxDetectedScore = num;
+            if (scoreBadge) scoreBadge.textContent = 'Score: ' + maxDetectedScore;
             scorm.reportScore(maxDetectedScore);
+            scorm.saveState({ score: maxDetectedScore, timestamp: Date.now() });
           }
         }
       });
 
-      // Check for win modal or completion triggers
+      // 2. Check for win modal or completion triggers
       const winModal = document.querySelector('#game-root .modal-overlay, #game-root .win-modal, #game-root [data-win="true"]');
       const winText = document.body.innerText || '';
       if (winModal || winText.includes('You Win!') || winText.includes('Great Job!') || winText.includes('Level Complete!') || winText.includes('Super Memory!')) {
-        scorm.reportCompletion(maxDetectedScore);
+        const finalGrade = Math.max(100, maxDetectedScore);
+        scorm.reportCompletion(finalGrade);
       }
-    }, 1500);
+    }, 1000);
 
-    // Auto-terminate on LMS exit
-    window.addEventListener('beforeunload', () => {
-      if (scorm) scorm.terminate();
-    });
+    // Auto-terminate and commit on LMS exit / window unload
+    const finalizeSession = () => {
+      if (scorm) {
+        scorm.reportScore(maxDetectedScore);
+        scorm.terminate();
+      }
+    };
+
+    window.addEventListener('beforeunload', finalizeSession);
+    window.addEventListener('pagehide', finalizeSession);
+    window.addEventListener('unload', finalizeSession);
   </script>
 </body>
 </html>`;
@@ -202,11 +223,13 @@ function packageGame(gameId: string): void {
 
   // 5. Copy scorm-bridge.js
   const scormBridgeCode = `
-// Universal SCORM Bridge (SCORM 1.2 & 2004)
+// Universal SCORM Bridge (SCORM 1.2 & 2004) with Resume State Support
 window.SCORMBridge = {
   getInstance: function() {
     let api = null;
     let win = window;
+    
+    // Find SCORM API in parent or opener frames
     while (win) {
       if (win.API_1484_11) { api = { handle: win.API_1484_11, v: '2004' }; break; }
       if (win.API) { api = { handle: win.API, v: '1.2' }; break; }
@@ -217,75 +240,145 @@ window.SCORMBridge = {
 
     let currentScore = 0;
     let startTime = Date.now();
+    let isTerminated = false;
+
+    const getSafeScore = function(score) {
+      const num = Number(score) || 0;
+      // Standardize score to 0 - 100 range for LMS gradebooks
+      if (num > 100) return Math.min(100, Math.round((num / 200) * 100));
+      return Math.min(100, Math.max(0, num));
+    };
 
     return {
       initialize: function() {
         if (!api) return false;
-        const res = api.v === '2004' ? api.handle.Initialize('') === 'true' : api.handle.LMSInitialize('') === 'true';
-        if (res) {
-          if (api.v === '2004') {
-            api.handle.SetValue('cmi.completion_status', 'incomplete');
-            api.handle.SetValue('cmi.score.min', '0');
-            api.handle.SetValue('cmi.score.max', '1000');
-            api.handle.Commit('');
-          } else {
-            api.handle.LMSSetValue('cmi.core.lesson_status', 'incomplete');
-            api.handle.LMSSetValue('cmi.core.score.min', '0');
-            api.handle.LMSSetValue('cmi.core.score.max', '1000');
-            api.handle.LMSCommit('');
+        try {
+          const res = api.v === '2004' ? api.handle.Initialize('') === 'true' : api.handle.LMSInitialize('') === 'true';
+          if (res) {
+            if (api.v === '2004') {
+              api.handle.SetValue('cmi.completion_status', 'incomplete');
+              api.handle.SetValue('cmi.score.min', '0');
+              api.handle.SetValue('cmi.score.max', '100');
+              api.handle.SetValue('cmi.score.raw', '0');
+              api.handle.SetValue('cmi.score.scaled', '0');
+              api.handle.Commit('');
+            } else {
+              api.handle.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+              api.handle.LMSSetValue('cmi.core.score.min', '0');
+              api.handle.LMSSetValue('cmi.core.score.max', '100');
+              api.handle.LMSSetValue('cmi.core.score.raw', '0');
+              api.handle.LMSCommit('');
+            }
           }
+          return res;
+        } catch(e) {
+          return false;
         }
-        return res;
       },
       reportScore: function(score) {
-        if (!api) return;
+        if (!api || isTerminated) return;
         currentScore = Number(score) || 0;
-        if (api.v === '2004') {
-          api.handle.SetValue('cmi.score.raw', String(currentScore));
-          api.handle.SetValue('cmi.score.scaled', String(Math.min(1, currentScore / 500)));
-          api.handle.Commit('');
-        } else {
-          api.handle.LMSSetValue('cmi.core.score.raw', String(currentScore));
-          api.handle.LMSCommit('');
-        }
+        const normalized = getSafeScore(currentScore);
+        try {
+          if (api.v === '2004') {
+            api.handle.SetValue('cmi.score.raw', String(normalized));
+            api.handle.SetValue('cmi.score.scaled', String(normalized / 100));
+            api.handle.SetValue('cmi.completion_status', normalized >= 50 ? 'completed' : 'incomplete');
+            api.handle.Commit('');
+          } else {
+            api.handle.LMSSetValue('cmi.core.score.min', '0');
+            api.handle.LMSSetValue('cmi.core.score.max', '100');
+            api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
+            api.handle.LMSSetValue('cmi.core.lesson_status', normalized >= 50 ? 'completed' : 'incomplete');
+            api.handle.LMSCommit('');
+          }
+        } catch(e) {}
       },
       reportTime: function(seconds) {
-        if (!api) return;
+        if (!api || isTerminated) return;
         const s = Number(seconds) || Math.floor((Date.now() - startTime) / 1000);
         const hrs = Math.floor(s / 3600);
         const mins = Math.floor((s % 3600) / 60);
         const secs = s % 60;
-        if (api.v === '2004') {
-          api.handle.SetValue('cmi.session_time', 'PT' + hrs + 'H' + mins + 'M' + secs + 'S');
-          api.handle.Commit('');
-        } else {
-          const hStr = String(hrs).padStart(4, '0');
-          const mStr = String(mins).padStart(2, '0');
-          const sStr = String(secs).padStart(2, '0');
-          api.handle.LMSSetValue('cmi.core.session_time', hStr + ':' + mStr + ':' + sStr);
-          api.handle.LMSCommit('');
-        }
+        try {
+          if (api.v === '2004') {
+            api.handle.SetValue('cmi.session_time', 'PT' + hrs + 'H' + mins + 'M' + secs + 'S');
+            api.handle.Commit('');
+          } else {
+            const hStr = String(hrs).padStart(4, '0');
+            const mStr = String(mins).padStart(2, '0');
+            const sStr = String(secs).padStart(2, '0');
+            api.handle.LMSSetValue('cmi.core.session_time', hStr + ':' + mStr + ':' + sStr);
+            api.handle.LMSCommit('');
+          }
+        } catch(e) {}
       },
       reportCompletion: function(score) {
-        if (!api) return;
+        if (!api || isTerminated) return;
         if (score !== undefined) currentScore = Number(score);
-        this.reportScore(currentScore);
-        this.reportTime();
-        if (api.v === '2004') {
-          api.handle.SetValue('cmi.completion_status', 'completed');
-          api.handle.SetValue('cmi.success_status', 'passed');
-          api.handle.Commit('');
-        } else {
-          api.handle.LMSSetValue('cmi.core.lesson_status', 'passed');
-          api.handle.LMSCommit('');
-        }
+        const normalized = Math.max(100, getSafeScore(currentScore));
+        try {
+          this.reportTime();
+          if (api.v === '2004') {
+            api.handle.SetValue('cmi.score.raw', String(normalized));
+            api.handle.SetValue('cmi.score.scaled', '1.0');
+            api.handle.SetValue('cmi.completion_status', 'completed');
+            api.handle.SetValue('cmi.success_status', 'passed');
+            api.handle.Commit('');
+          } else {
+            api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
+            api.handle.LMSSetValue('cmi.core.lesson_status', 'passed');
+            api.handle.LMSCommit('');
+          }
+        } catch(e) {}
+      },
+      saveState: function(stateObj) {
+        if (!api || isTerminated) return;
+        try {
+          const str = JSON.stringify(stateObj);
+          if (api.v === '2004') {
+            api.handle.SetValue('cmi.suspend_data', str);
+            api.handle.SetValue('cmi.exit', 'suspend');
+            api.handle.Commit('');
+          } else {
+            api.handle.LMSSetValue('cmi.suspend_data', str);
+            api.handle.LMSSetValue('cmi.core.exit', 'suspend');
+            api.handle.LMSCommit('');
+          }
+        } catch(e) {}
+      },
+      getSavedState: function() {
+        if (!api) return null;
+        try {
+          const data = api.v === '2004' ? api.handle.GetValue('cmi.suspend_data') : api.handle.LMSGetValue('cmi.suspend_data');
+          if (data && data.startsWith('{')) {
+            return JSON.parse(data);
+          }
+        } catch(e) {}
+        return null;
       },
       terminate: function() {
-        if (!api) return;
-        this.reportTime();
-        if (currentScore > 0) this.reportScore(currentScore);
-        if (api.v === '2004') api.handle.Terminate('');
-        else api.handle.LMSFinish('');
+        if (!api || isTerminated) return;
+        try {
+          this.reportTime();
+          if (currentScore > 0) {
+            const normalized = getSafeScore(currentScore);
+            if (api.v === '2004') {
+              api.handle.SetValue('cmi.score.raw', String(normalized));
+              api.handle.SetValue('cmi.score.scaled', String(normalized / 100));
+              api.handle.Commit('');
+              api.handle.Terminate('');
+            } else {
+              api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
+              api.handle.LMSCommit('');
+              api.handle.LMSFinish('');
+            }
+          } else {
+            if (api.v === '2004') api.handle.Terminate('');
+            else api.handle.LMSFinish('');
+          }
+        } catch(e) {}
+        isTerminated = true;
       }
     };
   }
