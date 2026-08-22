@@ -157,7 +157,10 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
     if (scorm && scorm.initialize()) {
       lmsBadge.textContent = '🟢 Gradebook Connected';
       lmsBadge.className = 'bg-emerald-700 text-white px-2.5 py-0.5 rounded text-xs font-black';
-      
+    } else if (lmsBadge) {
+      lmsBadge.textContent = '⚪ Standalone Mode';
+    }
+
     // Check for saved state
     const saved = scorm ? scorm.getSavedState() : null;
     if (saved && (saved.score !== undefined || saved.level || saved.round || saved.rawPoints)) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="KIDS_MEMORY_CONNECT_THE_DOTS_1787394694260" version="1.2"
+<manifest identifier="KIDS_MEMORY_CONNECT_THE_DOTS_1787413455168" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p1p2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,8 +10,8 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="KIDS_MEMORY_CONNECT_THE_DOTS_1787394694260_ORG">
-    <organization identifier="KIDS_MEMORY_CONNECT_THE_DOTS_1787394694260_ORG">
+  <organizations default="KIDS_MEMORY_CONNECT_THE_DOTS_1787413455168_ORG">
+    <organization identifier="KIDS_MEMORY_CONNECT_THE_DOTS_1787413455168_ORG">
       <title>Connect the Dots — Classroom SCORM Edition</title>
       <item identifier="ITEM_1" identifierref="RES_CONNECT_THE_DOTS">
         <title>Connect the Dots</title>
@@ -23,7 +23,7 @@
     <resource identifier="RES_CONNECT_THE_DOTS" type="webcontent" adlcp:scormtype="sco" href="connect-the-dots.html">
       <file href="index.html"/>
       <file href="scorm-bridge.js"/>
-      <file href="_astro/about.BGaBN2sU.css"/>
+      <file href="_astro/about.Beqn1vYX.css"/>
       <file href="_astro/audio.DESBDeeW.js"/>
       <file href="_astro/game.9dT19w_f.js"/>
       <file href="_astro/game.B4g8ePMh.js"/>

@@ -87,6 +87,15 @@ describe('SCORM Package Integrity & Cross-Contamination Prevention', () => {
         expect(bridgeJs).toContain('window.SCORMBridge');
         expect(bridgeJs).toContain('reportCompletion');
         expect(bridgeJs).toContain('getSavedState');
+
+        // Extract and syntax-check all inline <script> blocks inside HTML files
+        const scriptMatches = (gameHtml.match(/<script>([\s\S]*?)<\/script>/gi) || [])
+          .concat(indexHtml.match(/<script>([\s\S]*?)<\/script>/gi) || []);
+
+        scriptMatches.forEach(scriptTag => {
+          const code = scriptTag.replace(/<\/?script>/gi, '');
+          expect(() => new Function(code), `Script syntax in ${gameId} HTML must be valid JavaScript`).not.toThrow();
+        });
       });
     });
   });

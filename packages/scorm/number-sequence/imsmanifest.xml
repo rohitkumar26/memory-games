@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="KIDS_MEMORY_NUMBER_SEQUENCE_1787394695164" version="1.2"
+<manifest identifier="KIDS_MEMORY_NUMBER_SEQUENCE_1787413481251" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p1p2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,8 +10,8 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="KIDS_MEMORY_NUMBER_SEQUENCE_1787394695164_ORG">
-    <organization identifier="KIDS_MEMORY_NUMBER_SEQUENCE_1787394695164_ORG">
+  <organizations default="KIDS_MEMORY_NUMBER_SEQUENCE_1787413481251_ORG">
+    <organization identifier="KIDS_MEMORY_NUMBER_SEQUENCE_1787413481251_ORG">
       <title>Number Sequence — Classroom SCORM Edition</title>
       <item identifier="ITEM_1" identifierref="RES_NUMBER_SEQUENCE">
         <title>Number Sequence</title>
@@ -23,7 +23,7 @@
     <resource identifier="RES_NUMBER_SEQUENCE" type="webcontent" adlcp:scormtype="sco" href="number-sequence.html">
       <file href="index.html"/>
       <file href="scorm-bridge.js"/>
-      <file href="_astro/about.BGaBN2sU.css"/>
+      <file href="_astro/about.Beqn1vYX.css"/>
       <file href="_astro/audio.DESBDeeW.js"/>
       <file href="_astro/game.9dT19w_f.js"/>
       <file href="_astro/game.B4g8ePMh.js"/>
