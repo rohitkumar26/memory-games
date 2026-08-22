@@ -122,6 +122,21 @@ const categories = [
           <span class="text-xs px-2 py-0.5 bg-purple-200/60 rounded-full font-bold">On / Off</span>
         </button>
 
+        <!-- For Teachers SCORM Card -->
+        <a
+          href="/for-teachers"
+          class="p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-between group"
+        >
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl group-hover:scale-110 transition-transform">🎓</span>
+            <div>
+              <span class="font-black text-xs block text-white leading-tight">For Teachers & Schools</span>
+              <span class="text-[10px] text-purple-200 block">SCORM for Canvas & Moodle</span>
+            </div>
+          </div>
+          <span class="text-xs font-black text-amber-300">→</span>
+        </a>
+
         <!-- Trust Badges -->
         <div class="p-3 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100">
           <div class="flex items-center gap-2 text-emerald-800 font-bold text-xs mb-1">
@@ -151,52 +166,44 @@ const categories = [
       </header>
 
       <!-- Games Grid -->
-      <div id="games-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {games.map((game) => (
           <div 
+            class="game-card bg-white rounded-3xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border-2 border-purple-50 hover:border-purple-200 flex flex-col justify-between group cursor-pointer"
             data-category={game.category}
             data-game-id={game.id}
-            data-default-level={game.difficulty.default || 1}
             data-selected-level={game.difficulty.default || 1}
-            class="game-card group relative bg-white rounded-3xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border-4 border-transparent hover:border-kid-purple/30 flex flex-col justify-between cursor-pointer"
           >
-            <!-- Category Gradient Bar -->
-            <div class={`absolute top-0 left-0 right-0 h-2.5 bg-gradient-to-r ${categoryColors[game.category] || 'from-gray-400 to-gray-500'} rounded-t-3xl`} />
-
-            <!-- Card Header & Body Link -->
-            <a href={`/play/${game.id}`} class="card-body-link block cursor-pointer text-left focus:outline-none">
-              <!-- Card Header -->
-              <div class="flex items-start justify-between mb-3 mt-1">
-                <span class="text-4xl group-hover:scale-110 transition-transform">{gameIcons[game.id] || '🎮'}</span>
-                <div class="flex flex-col items-end gap-1">
-                  <span class="px-3 py-1 bg-gray-100 rounded-full text-xs font-bold text-gray-500">
-                    Ages {game.ageRange.min}-{game.ageRange.max}
-                  </span>
-                  <span class="px-2.5 py-0.5 bg-purple-50 text-purple-600 rounded-full text-[11px] font-bold">
-                    {categoryLabels[game.category] || game.category}
-                  </span>
-                </div>
+            <div>
+              <!-- Game Icon & Engine Badge -->
+              <div class="flex items-start justify-between mb-4">
+                <a href={`/play/${game.id}`} class="card-body-link w-14 h-14 rounded-2xl bg-purple-50 group-hover:bg-purple-100 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300 shadow-2xs">
+                  {gameIcons[game.id] || '🎮'}
+                </a>
+                <span class="px-3 py-1 bg-purple-50 text-kid-purple rounded-full text-xs font-extrabold uppercase tracking-wide">
+                  {categoryLabels[game.category] || game.category}
+                </span>
               </div>
 
-              <!-- Game Title & Desc -->
-              <h3 class="text-2xl font-black text-gray-800 mb-2 group-hover:text-kid-purple transition-colors">
-                {game.name}
-              </h3>
+              <!-- Game Info -->
+              <a href={`/play/${game.id}`} class="card-body-link block">
+                <h3 class="text-xl font-black text-gray-800 group-hover:text-kid-purple transition-colors mb-2">
+                  {game.name}
+                </h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">
+                  {game.description}
+                </p>
+              </a>
+            </div>
 
-              <p class="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed">
-                {game.description}
-              </p>
-            </a>
-
-            <!-- Card Bottom: Interactive Difficulty Stars + Play Button -->
-            <div class="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-3">
-              <!-- Interactive Stars Selector -->
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Difficulty
+            <!-- Card Bottom: Interactive Star Level Selector & Play Button -->
+            <div class="flex flex-col gap-3 pt-4 border-t border-gray-100">
+              <!-- Star Difficulty Selector -->
+              <div class="diff-stars-container flex items-center justify-between px-1">
+                <span class="text-xs font-extrabold text-gray-400 uppercase tracking-wider">
+                  Level:
                 </span>
-
-                <div class="diff-stars-container flex items-center gap-1 bg-amber-50/80 px-2 py-1 rounded-xl border border-amber-100" data-game-id={game.id}>
+                <div class="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((starNum) => (
                     <button
                       type="button"
@@ -237,6 +244,7 @@ const categories = [
       <footer class="mt-16 pt-8 border-t border-purple-100/80 text-center text-xs text-gray-500 flex flex-col gap-3">
         <div class="flex flex-wrap justify-center gap-6 font-bold text-gray-600">
           <a href="/" class="hover:text-kid-purple">All Games</a>
+          <a href="/for-teachers" class="text-purple-600 font-black hover:text-purple-800">🎓 For Teachers (SCORM)</a>
           <a href="/about" class="hover:text-kid-purple">About & Science</a>
           <a href="/privacy" class="hover:text-kid-purple">Privacy Policy</a>
           <a href="/terms" class="hover:text-kid-purple">Terms of Service</a>

@@ -11,6 +11,7 @@
     "test:contract": "vitest run src/tests/contract",
     "test:unit": "vitest run src/tests/unit",
     "check-asset-budget": "tsx src/scripts/check-asset-budget.ts",
+    "export:scorm": "tsx src/scripts/export-scorm.ts",
     "lint": "eslint src --ext .ts,.astro"
   },
   "dependencies": {
