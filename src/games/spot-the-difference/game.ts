@@ -183,8 +183,12 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(level: number, theme: keyof typeof THEMES): void {
+  startGame(level: number, theme?: keyof typeof THEMES): void {
     if (!this.api || !this.container) return;
+
+    this.currentLevel = level || 1;
+    const safeTheme = (theme && THEMES[theme as keyof typeof THEMES]) ? (theme as keyof typeof THEMES) : (this.currentTheme && THEMES[this.currentTheme] ? this.currentTheme : 'pets');
+    this.currentTheme = safeTheme;
 
     this.container.innerHTML = '';
 

@@ -282,8 +282,11 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(level: number, shapeIdx: number): void {
+  startGame(level: number, shapeIdx?: number): void {
     if (!this.api || !this.container) return;
+
+    this.currentLevel = level || 1;
+    this.currentShapeIdx = (typeof shapeIdx === 'number' && SHAPES[shapeIdx]) ? shapeIdx : (this.currentShapeIdx || 0);
 
     this.container.innerHTML = '';
     this.isDrawing = false;

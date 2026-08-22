@@ -196,7 +196,8 @@ export default {
   startGame(level: number): void {
     if (!this.api || !this.container) return;
 
-    const config = DIFFICULTY_CONFIG[level - 1] || DIFFICULTY_CONFIG[0];
+    this.currentLevel = level || 1;
+    const config = DIFFICULTY_CONFIG[this.currentLevel - 1] || DIFFICULTY_CONFIG[0];
     const activeHabitats = ALL_HABITATS.filter(h => config.habitatIds.includes(h.id));
 
     this.container.innerHTML = '';

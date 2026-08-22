@@ -243,8 +243,11 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(level: number, themeIdx: number): void {
+  startGame(level: number, themeIdx?: number): void {
     if (!this.api || !this.container) return;
+
+    this.currentLevel = level || 1;
+    this.currentThemeIdx = (typeof themeIdx === 'number' && THEMES[themeIdx]) ? themeIdx : (this.currentThemeIdx || 0);
 
     this.container.innerHTML = '';
     this.userDrawnPoints = [];
@@ -276,7 +279,7 @@ export default {
 
     // Instruction banner
     const banner = this.api.createElement('div', ['text-center', 'my-2']);
-    const theme = THEMES[themeIdx];
+    const theme = THEMES[this.currentThemeIdx] || THEMES[0];
     banner.innerHTML = `
       <span class="inline-block px-4 py-1.5 bg-white/90 backdrop-blur rounded-full text-sm font-bold text-gray-700 shadow-sm">
         Guide ${theme.startEmoji} along the dotted line to ${theme.endEmoji}!

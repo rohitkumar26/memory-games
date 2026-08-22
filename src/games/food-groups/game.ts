@@ -240,7 +240,8 @@ export default {
   startGame(level: number): void {
     if (!this.api || !this.container) return;
 
-    const config = DIFFICULTY_CONFIG[level - 1] || DIFFICULTY_CONFIG[0];
+    this.currentLevel = level || 1;
+    const config = DIFFICULTY_CONFIG[this.currentLevel - 1] || DIFFICULTY_CONFIG[0];
     const activeGroups = ALL_FOOD_GROUPS.filter(g => config.groupIds.includes(g.id));
 
     this.container.innerHTML = '';
@@ -294,6 +295,15 @@ export default {
     const mainArea = this.api.createElement('div', [
       'w-full', 'max-w-2xl', 'mx-auto', 'px-4', 'flex', 'flex-col', 'gap-4'
     ]);
+
+    // Level indicator
+    const levelBadge = this.api.createElement('div', ['text-center', 'mb-1']);
+    const levelText = this.api.createElement('span', [
+      'inline-block', 'px-4', 'py-1', 'bg-rose-100', 'text-rose-800', 'font-black', 'rounded-full', 'text-xs'
+    ]);
+    levelText.textContent = `Level ${this.currentLevel}: ${config.label} 🎯`;
+    levelBadge.appendChild(levelText);
+    mainArea.appendChild(levelBadge);
 
     // Progress Bar
     const progressWrap = this.api.createElement('div', ['w-full', 'bg-gray-200', 'rounded-full', 'h-3', 'overflow-hidden']);

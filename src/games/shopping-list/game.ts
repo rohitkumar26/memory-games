@@ -274,8 +274,11 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(level: number, storeIdx: number): void {
+  startGame(level: number, storeIdx?: number): void {
     if (!this.api || !this.container) return;
+
+    this.currentLevel = level || 1;
+    this.currentStoreIdx = (typeof storeIdx === 'number' && STORE_THEMES[storeIdx]) ? storeIdx : (this.currentStoreIdx || 0);
 
     this.container.innerHTML = '';
     this.isLocked = false;

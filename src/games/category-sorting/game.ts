@@ -250,11 +250,13 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(level: number, packIdx: number): void {
+  startGame(level: number, packIdx?: number): void {
     if (!this.api || !this.container) return;
 
-    const pack = CATEGORY_PACKS[packIdx] || CATEGORY_PACKS[0];
-    const config = DIFFICULTY_CONFIG[level - 1] || DIFFICULTY_CONFIG[0];
+    this.currentLevel = level || 1;
+    this.currentPackIdx = (typeof packIdx === 'number' && CATEGORY_PACKS[packIdx]) ? packIdx : (this.currentPackIdx || 0);
+    const pack = CATEGORY_PACKS[this.currentPackIdx] || CATEGORY_PACKS[0];
+    const config = DIFFICULTY_CONFIG[this.currentLevel - 1] || DIFFICULTY_CONFIG[0];
 
     this.container.innerHTML = '';
     this.sortedCount = 0;

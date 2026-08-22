@@ -233,8 +233,12 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(shapeIdx: number): void {
+  startGame(levelOrShapeIdx?: number): void {
     if (!this.api || !this.container) return;
+
+    const idx = typeof levelOrShapeIdx === 'number' ? (levelOrShapeIdx > 0 && levelOrShapeIdx <= SHAPE_PRESETS.length ? levelOrShapeIdx - 1 : levelOrShapeIdx) : (this.currentShapeIdx || 0);
+    this.currentShapeIdx = (idx >= 0 && idx < SHAPE_PRESETS.length) ? idx : 0;
+    this.currentLevel = this.currentShapeIdx + 1;
 
     this.container.innerHTML = '';
     this.nextDotNum = 1;
@@ -264,7 +268,7 @@ export default {
 
     this.container.appendChild(header);
 
-    const preset = SHAPE_PRESETS[shapeIdx] || SHAPE_PRESETS[0];
+    const preset = SHAPE_PRESETS[this.currentShapeIdx] || SHAPE_PRESETS[0];
 
     // Status Banner
     const banner = this.api.createElement('div', ['text-center', 'my-2']);

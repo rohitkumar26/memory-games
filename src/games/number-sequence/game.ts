@@ -181,9 +181,11 @@ export default {
     this.container.appendChild(menu);
   },
 
-  startGame(level: number, mode: 'forward' | 'reverse'): void {
+  startGame(level: number, mode?: 'forward' | 'reverse'): void {
     if (!this.api || !this.container) return;
 
+    this.currentLevel = level || 1;
+    this.currentMode = (mode === 'forward' || mode === 'reverse') ? mode : (this.currentMode || 'forward');
     this.container.innerHTML = '';
     this.isComputerTurn = false;
 
