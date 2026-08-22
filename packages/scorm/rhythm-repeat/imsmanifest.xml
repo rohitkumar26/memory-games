@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="KIDS_MEMORY_RHYTHM_REPEAT_1787388915531" version="1.2"
+<manifest identifier="KIDS_MEMORY_RHYTHM_REPEAT_1787389064144" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p1p2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,17 +10,17 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="KIDS_MEMORY_RHYTHM_REPEAT_1787388915531_ORG">
-    <organization identifier="KIDS_MEMORY_RHYTHM_REPEAT_1787388915531_ORG">
+  <organizations default="KIDS_MEMORY_RHYTHM_REPEAT_1787389064144_ORG">
+    <organization identifier="KIDS_MEMORY_RHYTHM_REPEAT_1787389064144_ORG">
       <title>Rhythm Repeat — Classroom SCORM Edition</title>
-      <item identifier="ITEM_1" identifierref="RESOURCE_1">
+      <item identifier="ITEM_1" identifierref="RES_RHYTHM_REPEAT">
         <title>Rhythm Repeat</title>
         <adlcp:masteryscore>70</adlcp:masteryscore>
       </item>
     </organization>
   </organizations>
   <resources>
-    <resource identifier="RESOURCE_RHYTHM_REPEAT" type="webcontent" adlcp:scormtype="sco" href="index.html">
+    <resource identifier="RES_RHYTHM_REPEAT" type="webcontent" adlcp:scormtype="sco" href="index.html">
       <file href="index.html"/>
       <file href="scorm-bridge.js"/>
       <file href="_astro/about.DU_OHd83.css"/>

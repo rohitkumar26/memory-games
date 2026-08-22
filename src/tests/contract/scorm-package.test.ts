@@ -68,6 +68,11 @@ describe('SCORM Package Integrity & Cross-Contamination Prevention', () => {
         expect(manifestXml).toContain(`<title>${manifest.name}</title>`);
         expect(manifestXml).toContain(`KIDS_MEMORY_${gameId.toUpperCase().replace(/-/g, '_')}`);
 
+        // Verify resource identifier matching
+        const resId = `RES_${gameId.toUpperCase().replace(/-/g, '_')}`;
+        expect(manifestXml).toContain(`identifierref="${resId}"`);
+        expect(manifestXml).toContain(`<resource identifier="${resId}"`);
+
         // Read and verify scorm-bridge.js
         const bridgeEntry = zip.getEntry('scorm-bridge.js');
         expect(bridgeEntry).toBeDefined();

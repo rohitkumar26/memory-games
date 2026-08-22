@@ -25,6 +25,8 @@ function generateIMSManifest(manifest: any, assetFiles: string[]): string {
     ...assetFiles.map(f => `      <file href="${f.replace(/\\/g, '/')}"/>`)
   ].join('\n');
 
+  const resId = `RES_${manifest.id.toUpperCase().replace(/-/g, '_')}`;
+
   return `<?xml version="1.0" standalone="no" ?>
 <manifest identifier="${identifier}" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
@@ -40,14 +42,14 @@ function generateIMSManifest(manifest: any, assetFiles: string[]): string {
   <organizations default="${identifier}_ORG">
     <organization identifier="${identifier}_ORG">
       <title>${title}</title>
-      <item identifier="ITEM_1" identifierref="RESOURCE_1">
+      <item identifier="ITEM_1" identifierref="${resId}">
         <title>${manifest.name}</title>
         <adlcp:masteryscore>70</adlcp:masteryscore>
       </item>
     </organization>
   </organizations>
   <resources>
-    <resource identifier="RESOURCE_${manifest.id.toUpperCase().replace(/-/g, '_')}" type="webcontent" adlcp:scormtype="sco" href="index.html">
+    <resource identifier="${resId}" type="webcontent" adlcp:scormtype="sco" href="index.html">
 ${fileEntries}
     </resource>
   </resources>
