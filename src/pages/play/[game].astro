@@ -305,6 +305,16 @@ const gameSchema = {
     const difficultyParam = parseInt(urlParams.get('difficulty') || urlParams.get('level') || '0', 10);
     const shouldAutoStart = urlParams.get('start') === 'true' || urlParams.get('autoplay') === 'true';
 
+    // Check for SCORM / Embed mode to render distraction-free classroom view
+    if (urlParams.get('scorm') === '1' || urlParams.get('embed') === 'true' || urlParams.get('embed') === '1') {
+      const topNav = document.querySelector('nav');
+      const eduSection = document.querySelector('section');
+      const footer = document.querySelector('footer');
+      if (topNav) topNav.style.display = 'none';
+      if (eduSection) eduSection.style.display = 'none';
+      if (footer) footer.style.display = 'none';
+    }
+
     if (gameId && (window as any).GameEngine) {
       (window as any).GameEngine.mount('game-root');
       (window as any).GameEngine.load(gameId, {

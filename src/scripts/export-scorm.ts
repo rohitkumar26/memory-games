@@ -21,7 +21,6 @@ function generateIMSManifest(manifest: any, assetFiles: string[]): string {
   const entryFile = `${manifest.id}.html`;
 
   const fileEntries = [
-    `      <file href="${entryFile}"/>`,
     '      <file href="index.html"/>',
     '      <file href="scorm-bridge.js"/>',
     ...assetFiles.map(f => `      <file href="${f.replace(/\\/g, '/')}"/>`)
