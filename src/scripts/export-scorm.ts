@@ -322,8 +322,7 @@ window.SCORMBridge = {
 
     const getSafeScore = function(score) {
       const num = Number(score) || 0;
-      if (num <= 100) return Math.max(0, Math.round(num));
-      return Math.min(100, Math.max(0, Math.round((num / 1000) * 100)));
+      return Math.min(100, Math.max(0, Math.round(num)));
     };
 
     return {
@@ -333,18 +332,30 @@ window.SCORMBridge = {
           const res = api.v === '2004' ? api.handle.Initialize('') === 'true' : api.handle.LMSInitialize('') === 'true';
           if (res) {
             if (api.v === '2004') {
-              api.handle.SetValue('cmi.completion_status', 'incomplete');
-              api.handle.SetValue('cmi.score.min', '0');
-              api.handle.SetValue('cmi.score.max', '100');
-              api.handle.SetValue('cmi.score.raw', '0');
-              api.handle.SetValue('cmi.score.scaled', '0');
-              api.handle.Commit('');
+              const existingStatus = api.handle.GetValue('cmi.completion_status');
+              if (!existingStatus || existingStatus === 'unknown' || existingStatus === '') {
+                api.handle.SetValue('cmi.completion_status', 'incomplete');
+                api.handle.SetValue('cmi.score.min', '0');
+                api.handle.SetValue('cmi.score.max', '100');
+                api.handle.SetValue('cmi.score.raw', '0');
+                api.handle.SetValue('cmi.score.scaled', '0');
+                api.handle.Commit('');
+              } else {
+                const existingScore = api.handle.GetValue('cmi.score.raw');
+                if (existingScore) currentScore = Number(existingScore) || 0;
+              }
             } else {
-              api.handle.LMSSetValue('cmi.core.lesson_status', 'incomplete');
-              api.handle.LMSSetValue('cmi.core.score.min', '0');
-              api.handle.LMSSetValue('cmi.core.score.max', '100');
-              api.handle.LMSSetValue('cmi.core.score.raw', '0');
-              api.handle.LMSCommit('');
+              const existingStatus = api.handle.LMSGetValue('cmi.core.lesson_status');
+              if (!existingStatus || existingStatus === 'not attempted' || existingStatus === '') {
+                api.handle.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+                api.handle.LMSSetValue('cmi.core.score.min', '0');
+                api.handle.LMSSetValue('cmi.core.score.max', '100');
+                api.handle.LMSSetValue('cmi.core.score.raw', '0');
+                api.handle.LMSCommit('');
+              } else {
+                const existingScore = api.handle.LMSGetValue('cmi.core.score.raw');
+                if (existingScore) currentScore = Number(existingScore) || 0;
+              }
             }
           }
           return res;
@@ -393,16 +404,18 @@ window.SCORMBridge = {
       reportCompletion: function(score) {
         if (!api || isTerminated) return;
         if (score !== undefined) currentScore = Number(score);
-        const normalized = Math.max(100, getSafeScore(currentScore));
+        const normalized = getSafeScore(currentScore > 0 ? currentScore : 100);
         try {
           this.reportTime();
           if (api.v === '2004') {
             api.handle.SetValue('cmi.score.raw', String(normalized));
-            api.handle.SetValue('cmi.score.scaled', '1.0');
+            api.handle.SetValue('cmi.score.scaled', String(normalized / 100));
             api.handle.SetValue('cmi.completion_status', 'completed');
             api.handle.SetValue('cmi.success_status', 'passed');
             api.handle.Commit('');
           } else {
+            api.handle.LMSSetValue('cmi.core.score.min', '0');
+            api.handle.LMSSetValue('cmi.core.score.max', '100');
             api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
             api.handle.LMSSetValue('cmi.core.lesson_status', 'passed');
             api.handle.LMSCommit('');
