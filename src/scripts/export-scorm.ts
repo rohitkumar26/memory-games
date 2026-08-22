@@ -18,8 +18,10 @@ function generateIMSManifest(manifest: any, assetFiles: string[]): string {
   const timestamp = Date.now();
   const identifier = `KIDS_MEMORY_${manifest.id.toUpperCase().replace(/-/g, '_')}_${timestamp}`;
   const title = `${manifest.name} — Classroom SCORM Edition`;
+  const entryFile = `${manifest.id}.html`;
 
   const fileEntries = [
+    `      <file href="${entryFile}"/>`,
     '      <file href="index.html"/>',
     '      <file href="scorm-bridge.js"/>',
     ...assetFiles.map(f => `      <file href="${f.replace(/\\/g, '/')}"/>`)
@@ -49,7 +51,7 @@ function generateIMSManifest(manifest: any, assetFiles: string[]): string {
     </organization>
   </organizations>
   <resources>
-    <resource identifier="${resId}" type="webcontent" adlcp:scormtype="sco" href="index.html">
+    <resource identifier="${resId}" type="webcontent" adlcp:scormtype="sco" href="${entryFile}">
 ${fileEntries}
     </resource>
   </resources>
@@ -311,8 +313,10 @@ function packageGame(gameId: string): void {
   // 3. Write TEACHER_GUIDE.md
   writeFileSync(join(pkgDir, 'TEACHER_GUIDE.md'), generateTeacherGuide(manifest), 'utf-8');
 
-  // 4. Write standalone index.html
-  writeFileSync(join(pkgDir, 'index.html'), generateStandaloneHTML(manifest, cssFile, jsFile), 'utf-8');
+  // 4. Write standalone entry HTML (both unique gameId.html and index.html)
+  const standaloneHTML = generateStandaloneHTML(manifest, cssFile, jsFile);
+  writeFileSync(join(pkgDir, `${gameId}.html`), standaloneHTML, 'utf-8');
+  writeFileSync(join(pkgDir, 'index.html'), standaloneHTML, 'utf-8');
 
   // 5. Copy scorm-bridge.js
   const scormBridgeCode = `

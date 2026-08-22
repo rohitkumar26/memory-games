@@ -44,20 +44,27 @@ describe('SCORM Package Integrity & Cross-Contamination Prevention', () => {
 
         // Core required files
         expect(entries).toContain('index.html');
+        expect(entries).toContain(`${gameId}.html`);
         expect(entries).toContain('imsmanifest.xml');
         expect(entries).toContain('scorm-bridge.js');
         expect(entries).toContain('TEACHER_GUIDE.md');
 
-        // Read and verify index.html
+        // Read and verify index.html and gameId.html
         const indexHtmlEntry = zip.getEntry('index.html');
+        const gameHtmlEntry = zip.getEntry(`${gameId}.html`);
         expect(indexHtmlEntry).toBeDefined();
-        const indexHtml = indexHtmlEntry ? indexHtmlEntry.getData().toString('utf-8') : '';
+        expect(gameHtmlEntry).toBeDefined();
 
-        // Must match this exact game's ID and name
+        const indexHtml = indexHtmlEntry ? indexHtmlEntry.getData().toString('utf-8') : '';
+        const gameHtml = gameHtmlEntry ? gameHtmlEntry.getData().toString('utf-8') : '';
+
+        // Must match this exact game's ID and name in both entry points
         expect(indexHtml).toContain(`data-game-id="${gameId}"`);
+        expect(gameHtml).toContain(`data-game-id="${gameId}"`);
         expect(indexHtml).toContain(manifest.name);
+        expect(gameHtml).toContain(manifest.name);
         expect(indexHtml).toContain('http-equiv="Cache-Control"');
-        expect(indexHtml).toContain('SCORM LMS Edition');
+        expect(gameHtml).toContain('http-equiv="Cache-Control"');
 
         // Read and verify imsmanifest.xml
         const manifestEntry = zip.getEntry('imsmanifest.xml');
@@ -68,10 +75,10 @@ describe('SCORM Package Integrity & Cross-Contamination Prevention', () => {
         expect(manifestXml).toContain(`<title>${manifest.name}</title>`);
         expect(manifestXml).toContain(`KIDS_MEMORY_${gameId.toUpperCase().replace(/-/g, '_')}`);
 
-        // Verify resource identifier matching
+        // Verify resource identifier and unique SCO entry file matching
         const resId = `RES_${gameId.toUpperCase().replace(/-/g, '_')}`;
         expect(manifestXml).toContain(`identifierref="${resId}"`);
-        expect(manifestXml).toContain(`<resource identifier="${resId}"`);
+        expect(manifestXml).toContain(`<resource identifier="${resId}" type="webcontent" adlcp:scormtype="sco" href="${gameId}.html">`);
 
         // Read and verify scorm-bridge.js
         const bridgeEntry = zip.getEntry('scorm-bridge.js');

@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="KIDS_MEMORY_SHOPPING_LIST_1787389064401" version="1.2"
+<manifest identifier="KIDS_MEMORY_SHOPPING_LIST_1787389531523" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p1p2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,8 +10,8 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="KIDS_MEMORY_SHOPPING_LIST_1787389064401_ORG">
-    <organization identifier="KIDS_MEMORY_SHOPPING_LIST_1787389064401_ORG">
+  <organizations default="KIDS_MEMORY_SHOPPING_LIST_1787389531523_ORG">
+    <organization identifier="KIDS_MEMORY_SHOPPING_LIST_1787389531523_ORG">
       <title>Shopping List — Classroom SCORM Edition</title>
       <item identifier="ITEM_1" identifierref="RES_SHOPPING_LIST">
         <title>Shopping List</title>
@@ -20,7 +20,8 @@
     </organization>
   </organizations>
   <resources>
-    <resource identifier="RES_SHOPPING_LIST" type="webcontent" adlcp:scormtype="sco" href="index.html">
+    <resource identifier="RES_SHOPPING_LIST" type="webcontent" adlcp:scormtype="sco" href="shopping-list.html">
+      <file href="shopping-list.html"/>
       <file href="index.html"/>
       <file href="scorm-bridge.js"/>
       <file href="_astro/about.DU_OHd83.css"/>
