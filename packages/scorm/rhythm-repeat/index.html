@@ -7,12 +7,12 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Rhythm Repeat — Classroom SCORM Edition</title>
-  <link rel="stylesheet" href="./_astro/about.DU_OHd83.css">
+  <link rel="stylesheet" href="./_astro/about.CuJbP6hc.css">
   <style>
     body { margin: 0; padding: 0; background: #FDF8F3; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow-x: hidden; }
     #scorm-hud { background: #581C87; color: white; padding: 8px 16px; font-size: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   </style>
-  <script type="module" src="./_astro/hoisted.BsrYVRqj.js"></script>
+  <script type="module" src="./_astro/hoisted.CNO3Mw6s.js"></script>
 </head>
 <body class="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 min-h-screen flex flex-col justify-between text-gray-800">
   <div id="scorm-hud">
@@ -108,18 +108,23 @@
       lmsBadge.textContent = '⚪ Standalone Mode';
     }
 
-    // Auto-detect score, rounds, and level changes from game DOM HUD in real-time
+    // Auto-detect score, rounds, and level changes in real-time
     setInterval(() => {
       if (!scorm) return;
       
       const current = window.GameEngine ? window.GameEngine.getCurrentGame() : null;
       let activeLevel = current && current.currentLevel ? current.currentLevel : savedLevel;
+      let livePoints = 0;
 
-      // 1. Look for score numbers in HUD
+      if (current && current.score && typeof current.score.getScore === 'function') {
+        livePoints = current.score.getScore();
+      }
+
+      // Scan HUD elements for star / score numbers
       const starSpans = Array.from(document.querySelectorAll('#game-root span, #game-root div'));
       starSpans.forEach(el => {
         const text = (el.textContent || '').trim();
-        if (/^\d{1,5}$/.test(text)) {
+        if (/^d{1,5}$/.test(text)) {
           const num = parseInt(text, 10);
           if (num > maxDetectedScore && num < 10000) {
             maxDetectedScore = num;
@@ -127,37 +132,41 @@
         }
       });
 
-      // 2. Detect active Round and Target Rounds (e.g. "Round 4 of 5")
-      let activeRound = 1;
-      let targetRounds = 5;
-      const statusText = document.body.innerText || '';
-      const roundMatch = statusText.match(/Round\s+(\d+)\s+of\s+(\d+)/i);
-      if (roundMatch) {
-        activeRound = parseInt(roundMatch[1], 10);
-        targetRounds = parseInt(roundMatch[2], 10);
+      const displayPoints = Math.max(livePoints, maxDetectedScore);
+
+      // Check sorting progress (e.g. "Food 3 of 6" or "Item 2 of 4")
+      let progressPct = 0;
+      if (current && typeof current.sortedCount === 'number' && typeof current.totalCount === 'number' && current.totalCount > 0) {
+        progressPct = Math.min(90, Math.round((current.sortedCount / current.totalCount) * 100));
       }
 
-      // 3. Check for win modal or completion triggers
+      // Check round progress (e.g. "Round 3 of 5")
+      let activeRound = current && current.currentRound ? current.currentRound : savedRound;
+      const statusText = document.body.innerText || '';
+      const roundMatch = statusText.match(/Rounds+(d+)s+ofs+(d+)/i);
+      if (roundMatch) {
+        activeRound = parseInt(roundMatch[1], 10);
+        const targetRounds = parseInt(roundMatch[2], 10);
+        if (targetRounds > 0) {
+          progressPct = Math.max(progressPct, Math.min(90, Math.round(((activeRound - 1) / targetRounds) * 100)));
+        }
+      }
+
+      // Check for win modal or completion triggers
       const winModal = document.querySelector('#game-root .modal-overlay, #game-root .win-modal, #game-root [data-win="true"]');
       const isWin = winModal || statusText.includes('You Win!') || statusText.includes('Great Job!') || statusText.includes('Level Complete!') || statusText.includes('Super Memory!') || statusText.includes('Master!');
 
       if (isWin) {
-        if (scoreBadge) scoreBadge.textContent = 'Score: 100';
+        if (scoreBadge) scoreBadge.textContent = 'Score: ' + (displayPoints > 0 ? displayPoints : 100);
         scorm.reportCompletion(100);
-        scorm.saveState({ score: 100, rawPoints: maxDetectedScore, level: Math.min(5, activeLevel + 1), round: 1, timestamp: Date.now() });
+        scorm.saveState({ score: 100, rawPoints: displayPoints, level: Math.min(5, activeLevel + 1), round: 1, timestamp: Date.now() });
       } else {
-        // Fair ongoing score (0% to 90% while playing)
-        let currentProgress = 0;
-        if (roundMatch && targetRounds > 0) {
-          currentProgress = Math.min(90, Math.round(((activeRound - 1) / targetRounds) * 100));
-        } else if (maxDetectedScore > 0) {
-          currentProgress = Math.min(90, Math.round((maxDetectedScore / 1000) * 100));
-        }
-        if (scoreBadge) scoreBadge.textContent = 'Score: ' + currentProgress;
-        scorm.reportScore(currentProgress);
-        scorm.saveState({ score: currentProgress, rawPoints: maxDetectedScore, level: activeLevel, round: activeRound, timestamp: Date.now() });
+        const lmsScore = progressPct > 0 ? progressPct : (displayPoints > 0 ? Math.min(90, Math.round((displayPoints / 300) * 100)) : 0);
+        if (scoreBadge) scoreBadge.textContent = 'Score: ' + displayPoints;
+        scorm.reportScore(lmsScore);
+        scorm.saveState({ score: lmsScore, rawPoints: displayPoints, level: activeLevel, round: activeRound, timestamp: Date.now() });
       }
-    }, 1000);
+    }, 500);
 
     // Auto-terminate and commit on LMS exit / window unload
     const finalizeSession = () => {

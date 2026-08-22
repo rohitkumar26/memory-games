@@ -229,16 +229,20 @@ export default {
   },
 
   generatePath(size: number): Point[] {
-    // Generate a random self-avoiding walk from top-left (0,0) to bottom-right (size-1, size-1)
+    const start: Point = { r: 0, c: 0 };
+    const goal: Point = { r: size - 1, c: size - 1 };
+
     const visited = new Set<string>();
-    const path: Point[] = [{ r: 0, c: 0 }];
-    visited.add('0,0');
+    const path: Point[] = [];
 
-    let current = { r: 0, c: 0 };
-    const goal = { r: size - 1, c: size - 1 };
+    const dfs = (curr: Point): boolean => {
+      path.push(curr);
+      visited.add(`${curr.r},${curr.c}`);
 
-    while (current.r !== goal.r || current.c !== goal.c) {
-      const neighbors: Point[] = [];
+      if (curr.r === goal.r && curr.c === goal.c) {
+        return true;
+      }
+
       const deltas = [
         { r: 0, c: 1 },
         { r: 1, c: 0 },
@@ -246,33 +250,27 @@ export default {
         { r: -1, c: 0 }
       ];
 
+      // Shuffle with slight goal bias to create fun, interesting paths
+      deltas.sort((a, b) => {
+        const distA = Math.hypot(goal.r - (curr.r + a.r), goal.c - (curr.c + a.c));
+        const distB = Math.hypot(goal.r - (curr.r + b.r), goal.c - (curr.c + b.c));
+        return (distA - distB) * 0.7 + (Math.random() - 0.5) * 1.5;
+      });
+
       for (const d of deltas) {
-        const nr = current.r + d.r;
-        const nc = current.c + d.c;
+        const nr = curr.r + d.r;
+        const nc = curr.c + d.c;
         if (nr >= 0 && nr < size && nc >= 0 && nc < size && !visited.has(`${nr},${nc}`)) {
-          neighbors.push({ r: nr, c: nc });
+          if (dfs({ r: nr, c: nc })) return true;
         }
       }
 
-      if (neighbors.length === 0) {
-        // Dead end, restart path generation
-        return this.generatePath(size);
-      }
+      path.pop();
+      return false;
+    };
 
-      // Prioritize moving towards goal
-      neighbors.sort((a, b) => {
-        const distA = Math.hypot(goal.r - a.r, goal.c - a.c);
-        const distB = Math.hypot(goal.r - b.r, goal.c - b.c);
-        return distA - distB + (Math.random() - 0.5);
-      });
-
-      const next = neighbors[0];
-      visited.add(`${next.r},${next.c}`);
-      path.push(next);
-      current = next;
-    }
-
-    return path;
+    dfs(start);
+    return path.length > 0 ? path : [{ r: 0, c: 0 }, { r: size - 1, c: size - 1 }];
   },
 
   async startRound(mainView: HTMLElement): Promise<void> {

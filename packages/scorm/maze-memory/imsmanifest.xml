@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="KIDS_MEMORY_MAZE_MEMORY_1787390761258" version="1.2"
+<manifest identifier="KIDS_MEMORY_MAZE_MEMORY_1787391327750" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p1p2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,8 +10,8 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="KIDS_MEMORY_MAZE_MEMORY_1787390761258_ORG">
-    <organization identifier="KIDS_MEMORY_MAZE_MEMORY_1787390761258_ORG">
+  <organizations default="KIDS_MEMORY_MAZE_MEMORY_1787391327750_ORG">
+    <organization identifier="KIDS_MEMORY_MAZE_MEMORY_1787391327750_ORG">
       <title>Maze Memory — Classroom SCORM Edition</title>
       <item identifier="ITEM_1" identifierref="RES_MAZE_MEMORY">
         <title>Maze Memory</title>
@@ -24,13 +24,12 @@
       <file href="maze-memory.html"/>
       <file href="index.html"/>
       <file href="scorm-bridge.js"/>
-      <file href="_astro/about.DU_OHd83.css"/>
+      <file href="_astro/about.CuJbP6hc.css"/>
       <file href="_astro/audio.DESBDeeW.js"/>
       <file href="_astro/game.7r7Bs2Mv.js"/>
       <file href="_astro/game.Bm6tat4_.js"/>
       <file href="_astro/game.BY_JupRQ.js"/>
       <file href="_astro/game.CLe8H3dA.js"/>
-      <file href="_astro/game.DFETqSD-.js"/>
       <file href="_astro/game.DIhwC--k.js"/>
       <file href="_astro/game.DiKZz0Vi.js"/>
       <file href="_astro/game.DKYTbkDT.js"/>
@@ -39,10 +38,11 @@
       <file href="_astro/game.Dr9CDt6_.js"/>
       <file href="_astro/game.dRa0uQZP.js"/>
       <file href="_astro/game.DyYCChvU.js"/>
+      <file href="_astro/game.EkEdZvzn.js"/>
       <file href="_astro/game.eMRfIHm1.js"/>
       <file href="_astro/game.x8YMF0AX.js"/>
       <file href="_astro/hoisted.B8HX4Zv8.js"/>
-      <file href="_astro/hoisted.BsrYVRqj.js"/>
+      <file href="_astro/hoisted.CNO3Mw6s.js"/>
       <file href="_astro/Score.DPfFm77y.js"/>
       <file href="_astro/Timer.BbhxgdXu.js"/>
     </resource>
