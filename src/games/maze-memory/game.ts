@@ -191,7 +191,7 @@ export default {
     if (!this.api || !this.container) return;
 
     this.currentLevel = level || 1;
-    this.currentThemeIdx = (typeof themeIdx === 'number' && MAZE_THEMES[themeIdx]) ? themeIdx : (this.currentThemeIdx || 0);
+    this.currentThemeIdx = (typeof themeIdx === 'number' && THEMES[themeIdx]) ? themeIdx : (this.currentThemeIdx || 0);
 
     this.container.innerHTML = '';
     this.isLocked = false;
