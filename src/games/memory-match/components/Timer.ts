@@ -53,6 +53,12 @@ export class Timer {
 
   stop(): number {
     this.pause();
+    if (typeof window !== 'undefined' && (window as any).SCORMBridge) {
+      try {
+        const scorm = (window as any).SCORMBridge.getInstance();
+        scorm?.reportTime(this.seconds);
+      } catch (e) {}
+    }
     return this.seconds;
   }
 

@@ -80,5 +80,11 @@ export class Score {
 
   private updateScore(): void {
     this.scoreDisplay.textContent = String(this.score);
+    if (typeof window !== 'undefined' && (window as any).SCORMBridge) {
+      try {
+        const scorm = (window as any).SCORMBridge.getInstance();
+        scorm?.reportScore(this.score);
+      } catch (e) {}
+    }
   }
 }
