@@ -12,7 +12,7 @@ SCORM Compliance: SCORM 1.2 & SCORM 2004
 
 ## 2. Gradebook Synchronization
 When a student plays this activity:
-- **Completion Status**: Reports "passed" once the target rounds are finished.
+- **Completion Status**: Reports "passed" once target rounds are finished.
 - **Score (Raw)**: Points earned (0–100+) auto-populate the teacher gradebook.
 - **Session Time**: Total time spent practicing is logged automatically.
 
