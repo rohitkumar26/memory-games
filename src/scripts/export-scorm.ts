@@ -203,25 +203,14 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       
       const current = window.GameEngine ? window.GameEngine.getCurrentGame() : null;
       let activeLevel = current && current.currentLevel ? current.currentLevel : savedLevel;
-      let livePoints = 0;
+      let livePoints = typeof window.__scormLiveScore === 'number' ? window.__scormLiveScore : 0;
 
       if (current && current.score && typeof current.score.getScore === 'function') {
-        livePoints = current.score.getScore();
+        livePoints = Math.max(livePoints, current.score.getScore());
       }
 
-      // Scan HUD elements for star / score numbers
-      const starSpans = Array.from(document.querySelectorAll('#game-root span, #game-root div'));
-      starSpans.forEach(el => {
-        const text = (el.textContent || '').trim();
-        if (/^\d{1,5}$/.test(text)) {
-          const num = parseInt(text, 10);
-          if (num > maxDetectedScore && num < 10000) {
-            maxDetectedScore = num;
-          }
-        }
-      });
-
       const displayPoints = Math.max(livePoints, maxDetectedScore);
+      if (scoreBadge) scoreBadge.textContent = 'Score: ' + displayPoints;
 
       // Check sorting progress (e.g. "Food 3 of 6" or "Item 2 of 4")
       let progressPct = 0;
@@ -241,20 +230,8 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
         }
       }
 
-      // Check for win modal or completion triggers
-      const winModal = document.querySelector('#game-root .modal-overlay, #game-root .win-modal, #game-root [data-win="true"]');
-      const isWin = winModal || statusText.includes('You Win!') || statusText.includes('Great Job!') || statusText.includes('Level Complete!') || statusText.includes('Super Memory!') || statusText.includes('Master!');
-
-      if (isWin) {
-        if (scoreBadge) scoreBadge.textContent = 'Score: ' + (displayPoints > 0 ? displayPoints : 100);
-        scorm.reportCompletion(100);
-        scorm.saveState({ score: 100, rawPoints: displayPoints, level: Math.min(5, activeLevel + 1), round: 1, timestamp: Date.now() });
-      } else {
-        const lmsScore = progressPct > 0 ? progressPct : (displayPoints > 0 ? Math.min(90, Math.round((displayPoints / 300) * 100)) : 0);
-        if (scoreBadge) scoreBadge.textContent = 'Score: ' + displayPoints;
-        scorm.reportScore(lmsScore);
-        scorm.saveState({ score: lmsScore, rawPoints: displayPoints, level: activeLevel, round: activeRound, timestamp: Date.now() });
-      }
+      const lmsScore = progressPct > 0 ? progressPct : (displayPoints > 0 ? Math.min(90, Math.round((displayPoints / 300) * 100)) : 0);
+      scorm.saveState({ score: lmsScore, rawPoints: displayPoints, level: activeLevel, round: activeRound, timestamp: Date.now() });
     }, 500);
 
     // Auto-terminate and commit on LMS exit / window unload

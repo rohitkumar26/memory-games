@@ -470,6 +470,13 @@ export default {
     this.api.playSound('win');
     this.api.showConfetti();
 
+    if (typeof window !== 'undefined' && (window as any).SCORMBridge) {
+      try {
+        const scorm = (window as any).SCORMBridge.getInstance();
+        scorm?.reportCompletion(finalScore || 100);
+      } catch (e) {}
+    }
+
     if (this.currentModal) {
       this.currentModal.remove();
       this.currentModal = null;
