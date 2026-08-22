@@ -54,10 +54,10 @@
       "type": "string",
       "enum": [
         "visual-spatial",
-        "auditory-sequential",
-        "working-memory",
-        "pattern-recognition",
-        "cognitive-flexibility"
+        "sequence-recall",
+        "category-sorting",
+        "drawing-tracing",
+        "object-recall"
       ],
       "description": "Primary cognitive memory development domain"
     },
