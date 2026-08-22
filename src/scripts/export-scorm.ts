@@ -1,6 +1,7 @@
-import { readdirSync, existsSync, mkdirSync, writeFileSync, readFileSync, copyFileSync } from 'fs';
+import { readdirSync, existsSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, unlinkSync } from 'fs';
 import { join, resolve } from 'path';
 import { execSync } from 'child_process';
+import AdmZip from 'adm-zip';
 
 const GAMES_DIR = resolve(process.cwd(), 'src/games');
 const DIST_DIR = resolve(process.cwd(), 'dist');
@@ -14,7 +15,8 @@ function getGameList(): string[] {
 }
 
 function generateIMSManifest(manifest: any, assetFiles: string[]): string {
-  const identifier = `KIDS_MEMORY_${manifest.id.toUpperCase().replace(/-/g, '_')}`;
+  const timestamp = Date.now();
+  const identifier = `KIDS_MEMORY_${manifest.id.toUpperCase().replace(/-/g, '_')}_${timestamp}`;
   const title = `${manifest.name} — Classroom SCORM Edition`;
 
   const fileEntries = [
@@ -45,7 +47,7 @@ function generateIMSManifest(manifest: any, assetFiles: string[]): string {
     </organization>
   </organizations>
   <resources>
-    <resource identifier="RESOURCE_1" type="webcontent" adlcp:scormtype="sco" href="index.html">
+    <resource identifier="RESOURCE_${manifest.id.toUpperCase().replace(/-/g, '_')}" type="webcontent" adlcp:scormtype="sco" href="index.html">
 ${fileEntries}
     </resource>
   </resources>
@@ -87,6 +89,9 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>${manifest.name} — Classroom SCORM Edition</title>
   <link rel="stylesheet" href="./_astro/${cssFile}">
   <style>
@@ -471,15 +476,27 @@ window.SCORMBridge = {
 `;
   writeFileSync(join(pkgDir, 'scorm-bridge.js'), scormBridgeCode, 'utf-8');
 
-  // 6. Create zip using PowerShell Compress-Archive on Windows
+  // 6. Create standard SCORM zip using AdmZip
   const zipPath = join(OUT_DIR, `${gameId}-scorm-v1.0.zip`);
+  const altZipPath = join(OUT_DIR, `${gameId}-scorm.zip`);
   try {
-    if (process.platform === 'win32') {
-      execSync(`powershell.exe -Command "Compress-Archive -Path '${pkgDir}\\*' -DestinationPath '${zipPath}' -Force"`);
+    const zip = new AdmZip();
+    zip.addLocalFolder(pkgDir);
+    try {
+      zip.writeZip(zipPath);
       console.log(`✅ Created SCORM zip: ${zipPath}`);
+    } catch (e: any) {
+      if (e.code === 'EBUSY') {
+        console.warn(`⚠️ ${gameId}-scorm-v1.0.zip is locked by another program. Writing to ${gameId}-scorm.zip...`);
+      }
     }
+    // Also write clean-named copy
+    try {
+      zip.writeZip(altZipPath);
+      console.log(`✅ Created SCORM zip: ${altZipPath}`);
+    } catch (e) {}
   } catch (err) {
-    console.warn(`Note: Zip file creation handled in directory: ${pkgDir}`);
+    console.error(`Error creating zip for ${gameId}:`, err);
   }
 }
 

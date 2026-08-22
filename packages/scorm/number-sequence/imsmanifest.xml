@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no" ?>
-<manifest identifier="KIDS_MEMORY_NUMBER_SEQUENCE" version="1.2"
+<manifest identifier="KIDS_MEMORY_NUMBER_SEQUENCE_1787388624069" version="1.2"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p1p2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,8 +10,8 @@
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
   </metadata>
-  <organizations default="KIDS_MEMORY_NUMBER_SEQUENCE_ORG">
-    <organization identifier="KIDS_MEMORY_NUMBER_SEQUENCE_ORG">
+  <organizations default="KIDS_MEMORY_NUMBER_SEQUENCE_1787388624069_ORG">
+    <organization identifier="KIDS_MEMORY_NUMBER_SEQUENCE_1787388624069_ORG">
       <title>Number Sequence — Classroom SCORM Edition</title>
       <item identifier="ITEM_1" identifierref="RESOURCE_1">
         <title>Number Sequence</title>
@@ -20,7 +20,7 @@
     </organization>
   </organizations>
   <resources>
-    <resource identifier="RESOURCE_1" type="webcontent" adlcp:scormtype="sco" href="index.html">
+    <resource identifier="RESOURCE_NUMBER_SEQUENCE" type="webcontent" adlcp:scormtype="sco" href="index.html">
       <file href="index.html"/>
       <file href="scorm-bridge.js"/>
       <file href="_astro/about.DU_OHd83.css"/>
