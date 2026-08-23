@@ -1,0 +1,11 @@
+# Content-hashed assets (Vite output) — immutable forever
+/_astro/*
+  Cache-Control: public, immutable, max-age=31536000
+
+# Game assets
+/games/*/assets/*
+  Cache-Control: public, immutable, max-age=31536000
+
+# HTML shells — always fresh
+/*.html
+  Cache-Control: no-cache

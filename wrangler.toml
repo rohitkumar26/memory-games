@@ -1,28 +1,6 @@
 name = "kids-memory-games"
 compatibility_date = "2026-08-19"
 
-[site]
-bucket = "./dist"
+[assets]
+directory = "./dist"
 
-# Content-hashed assets (Vite output) — immutable forever
-[[headers]]
-for = "/*/_astro/*.js"
-[headers.values]
-Cache-Control = "public, immutable, max-age=31536000"
-
-[[headers]]
-for = "/*/_astro/*.css"
-[headers.values]
-Cache-Control = "public, immutable, max-age=31536000"
-
-# Game assets
-[[headers]]
-for = "/games/*/assets/*"
-[headers.values]
-Cache-Control = "public, immutable, max-age=31536000"
-
-# HTML shells — always fresh
-[[headers]]
-for = "*.html"
-[headers.values]
-Cache-Control = "no-cache"
