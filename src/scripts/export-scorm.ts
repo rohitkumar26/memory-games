@@ -385,13 +385,11 @@ window.SCORMBridge = {
           if (api.v === '2004') {
             api.handle.SetValue('cmi.score.raw', String(normalized));
             api.handle.SetValue('cmi.score.scaled', String(normalized / 100));
-            api.handle.SetValue('cmi.completion_status', normalized >= 100 ? 'completed' : 'incomplete');
             api.handle.Commit('');
           } else {
             api.handle.LMSSetValue('cmi.core.score.min', '0');
             api.handle.LMSSetValue('cmi.core.score.max', '100');
             api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
-            api.handle.LMSSetValue('cmi.core.lesson_status', normalized >= 100 ? 'completed' : 'incomplete');
             api.handle.LMSCommit('');
           }
         } catch(e) {}
