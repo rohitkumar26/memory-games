@@ -48,6 +48,11 @@ describe('SCORM Package Integrity & Cross-Contamination Prevention', () => {
         expect(entries).toContain('imsmanifest.xml');
         expect(entries).toContain('scorm-bridge.js');
         expect(entries).toContain('TEACHER_GUIDE.md');
+        expect(entries).toContain('TEACHER_GUIDE.html');
+        expect(entries).toContain('TEACHER_GUIDE.pdf');
+        expect(entries).toContain('fonts/nunito-400.ttf');
+        expect(entries).toContain('fonts/nunito-700.ttf');
+        expect(entries).toContain('fonts/nunito-900.ttf');
 
         // Read and verify index.html and gameId.html
         const indexHtmlEntry = zip.getEntry('index.html');
@@ -65,6 +70,12 @@ describe('SCORM Package Integrity & Cross-Contamination Prevention', () => {
         expect(gameHtml).toContain(manifest.name);
         expect(indexHtml).toContain('http-equiv="Cache-Control"');
         expect(gameHtml).toContain('http-equiv="Cache-Control"');
+
+        // 100% Offline verification: No external Google Fonts CDN
+        expect(indexHtml).not.toContain('fonts.googleapis.com');
+        expect(gameHtml).not.toContain('fonts.googleapis.com');
+        expect(indexHtml).toContain('./fonts/nunito-400.ttf');
+        expect(gameHtml).toContain('./fonts/nunito-400.ttf');
 
         // Read and verify imsmanifest.xml
         const manifestEntry = zip.getEntry('imsmanifest.xml');
