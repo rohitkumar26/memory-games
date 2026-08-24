@@ -200,6 +200,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
     let lastReportedScore = -1;
     let lastReportedLevel = -1;
     let lastReportedRound = -1;
+    let highestRecordedScore = Math.max(0, Number(saved && (saved.score || saved.rawPoints)) || 0);
 
     // Auto-detect score, rounds, and level changes in real-time
     setInterval(() => {
@@ -216,25 +217,49 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       const displayPoints = Math.max(livePoints, maxDetectedScore);
       if (scoreBadge) scoreBadge.textContent = 'Score: ' + displayPoints;
 
-      // Check sorting progress (e.g. "Food 3 of 6" or "Item 2 of 4")
-      let progressPct = 0;
+      // 1. Calculate In-Level Progress (0..1)
+      let inLevelRatio = 0;
       if (current && typeof current.sortedCount === 'number' && typeof current.totalCount === 'number' && current.totalCount > 0) {
-        progressPct = Math.min(90, Math.round((current.sortedCount / current.totalCount) * 100));
+        inLevelRatio = current.sortedCount / current.totalCount;
+      } else if (current && Array.isArray(current.cards) && current.cards.length > 0) {
+        const done = current.cards.filter(c => c && typeof c.isDone === 'function' && c.isDone()).length;
+        inLevelRatio = done / current.cards.length;
+      } else if (current && Array.isArray(current.dots) && current.dots.length > 0) {
+        const connected = current.dots.filter(d => d && d.connected).length;
+        inLevelRatio = connected / current.dots.length;
+      } else {
+        const statusText = document.body.innerText || '';
+        const roundMatch = statusText.match(/Round\s+(\d+)\s+of\s+(\d+)/i);
+        if (roundMatch) {
+          const rCurrent = parseInt(roundMatch[1], 10);
+          const rTotal = parseInt(roundMatch[2], 10);
+          if (rTotal > 0) inLevelRatio = Math.max(0, (rCurrent - 1) / rTotal);
+        }
       }
 
-      // Check round progress (e.g. "Round 3 of 5")
       let activeRound = current && current.currentRound ? current.currentRound : savedRound;
       const statusText = document.body.innerText || '';
       const roundMatch = statusText.match(/Round\s+(\d+)\s+of\s+(\d+)/i);
       if (roundMatch) {
         activeRound = parseInt(roundMatch[1], 10);
-        const targetRounds = parseInt(roundMatch[2], 10);
-        if (targetRounds > 0) {
-          progressPct = Math.max(progressPct, Math.min(90, Math.round(((activeRound - 1) / targetRounds) * 100)));
-        }
       }
 
-      const lmsScore = progressPct > 0 ? progressPct : (displayPoints > 0 ? Math.min(90, Math.round((displayPoints / 300) * 100)) : 0);
+      // 2. Cumulative Multi-Level Progress across 5 difficulty levels (0..100)
+      const totalLevels = 5;
+      const completedLevels = Math.max(0, activeLevel - 1);
+      const cumulativeProgressPct = Math.min(100, Math.round(((completedLevels + Math.min(1, inLevelRatio)) / totalLevels) * 100));
+
+      // 3. Level-specific progress (0..100)
+      const levelProgressPct = Math.min(100, Math.round(inLevelRatio * 100));
+
+      // 4. Points-based progress
+      const pointsProgressPct = displayPoints > 0 ? Math.min(100, Math.round((displayPoints / 500) * 100)) : 0;
+
+      // Real-time calculated score: high-water mark ensuring no regressions
+      const currentCalculatedScore = Math.max(cumulativeProgressPct, levelProgressPct, pointsProgressPct);
+      highestRecordedScore = Math.max(highestRecordedScore, currentCalculatedScore);
+
+      const lmsScore = highestRecordedScore;
 
       if (lmsScore !== lastReportedScore || activeLevel !== lastReportedLevel || activeRound !== lastReportedRound || displayPoints !== maxDetectedScore) {
         lastReportedScore = lmsScore;
