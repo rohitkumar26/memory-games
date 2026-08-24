@@ -440,7 +440,7 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
     let lastReportedScore = -1;
     let lastReportedLevel = -1;
     let lastReportedRound = -1;
-    let highestRecordedScore = Math.max(0, Number(saved && (saved.score || saved.rawPoints)) || 0);
+    let highestRecordedScore = Math.max(0, Number(saved && saved.score) || 0);
 
     // Auto-detect score, rounds, and level changes in real-time
     setInterval(() => {
@@ -489,16 +489,8 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
       const completedLevels = Math.max(0, activeLevel - 1);
       const cumulativeProgressPct = Math.min(100, Math.round(((completedLevels + Math.min(1, inLevelRatio)) / totalLevels) * 100));
 
-      // 3. Level-specific progress (0..100)
-      const levelProgressPct = Math.min(100, Math.round(inLevelRatio * 100));
-
-      // 4. Points-based progress
-      const pointsProgressPct = displayPoints > 0 ? Math.min(100, Math.round((displayPoints / 500) * 100)) : 0;
-
       // Real-time calculated score: high-water mark ensuring no regressions
-      const currentCalculatedScore = Math.max(cumulativeProgressPct, levelProgressPct, pointsProgressPct);
-      highestRecordedScore = Math.max(highestRecordedScore, currentCalculatedScore);
-
+      highestRecordedScore = Math.max(highestRecordedScore, cumulativeProgressPct);
       const lmsScore = highestRecordedScore;
 
       if (lmsScore !== lastReportedScore || activeLevel !== lastReportedLevel || activeRound !== lastReportedRound || displayPoints !== maxDetectedScore) {
@@ -700,20 +692,24 @@ window.SCORMBridge = {
       },
       reportCompletion: function(score) {
         if (!api || isTerminated) return;
-        if (score !== undefined) currentScore = Number(score);
-        const normalized = getSafeScore(currentScore > 0 ? currentScore : 100);
+        if (score !== undefined && Number(score) <= 100) currentScore = Number(score);
+        const normalized = getSafeScore(currentScore > 0 ? currentScore : 20);
         try {
           this.reportTime();
           if (api.v === '2004') {
-            api.handle.SetValue('cmi.score.raw', String(normalized));
-            api.handle.SetValue('cmi.score.scaled', String(normalized / 100));
+            if (currentScore > 0) {
+              api.handle.SetValue('cmi.score.raw', String(normalized));
+              api.handle.SetValue('cmi.score.scaled', String(normalized / 100));
+            }
             api.handle.SetValue('cmi.completion_status', 'completed');
             api.handle.SetValue('cmi.success_status', 'passed');
             api.handle.Commit('');
           } else {
-            api.handle.LMSSetValue('cmi.core.score.min', '0');
-            api.handle.LMSSetValue('cmi.core.score.max', '100');
-            api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
+            if (currentScore > 0) {
+              api.handle.LMSSetValue('cmi.core.score.min', '0');
+              api.handle.LMSSetValue('cmi.core.score.max', '100');
+              api.handle.LMSSetValue('cmi.core.score.raw', String(normalized));
+            }
             api.handle.LMSSetValue('cmi.core.lesson_status', 'passed');
             api.handle.LMSCommit('');
           }
