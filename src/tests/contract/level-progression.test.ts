@@ -152,5 +152,41 @@ describe('Level Progression & startGame(level) Contract Tests', () => {
         expect(game.currentLevel).toBe(3);
       }
     });
+
+    it(`reports cumulative completion percentage in handleWin for ${gameId}`, async () => {
+      const mod = await import(join(process.cwd(), GAMES_DIR, gameId, 'game.ts'));
+      const game = mod.default;
+
+      let reportedScore = -1;
+      (globalThis as any).window.SCORMBridge = {
+        getInstance: () => ({
+          reportCompletion: (score: number) => {
+            reportedScore = score;
+          }
+        })
+      };
+
+      if (typeof game.init === 'function') {
+        game.container = mockContainer;
+        await game.init(mockApi);
+      }
+
+      if (typeof game.handleWin === 'function') {
+        // Level 1 Win
+        game.currentLevel = 1;
+        await game.handleWin();
+        expect(reportedScore).toBe(20);
+
+        // Level 2 Win
+        game.currentLevel = 2;
+        await game.handleWin();
+        expect(reportedScore).toBe(40);
+
+        // Level 5 Win
+        game.currentLevel = 5;
+        await game.handleWin();
+        expect(reportedScore).toBe(100);
+      }
+    });
   });
 });

@@ -436,7 +436,8 @@ export default {
     if (typeof window !== 'undefined' && (window as any).SCORMBridge) {
       try {
         const scorm = (window as any).SCORMBridge.getInstance();
-        scorm?.reportCompletion(finalScore || 100);
+        const cumulativePct = Math.min(100, Math.round(((this.currentLevel || 1) / 5) * 100));
+        scorm?.reportCompletion(cumulativePct);
       } catch (e) {}
     }
 

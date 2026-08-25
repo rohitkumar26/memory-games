@@ -440,7 +440,9 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
     let lastReportedScore = -1;
     let lastReportedLevel = -1;
     let lastReportedRound = -1;
-    let highestRecordedScore = Math.max(0, Number(saved && saved.score) || 0);
+    const totalLevels = ${manifest.difficulty ? manifest.difficulty.max : 5};
+    const baselineSavedScore = saved && saved.level ? Math.min(100, Math.round(((Math.max(1, Number(saved.level)) - 1) / totalLevels) * 100)) : 0;
+    let highestRecordedScore = Math.max(baselineSavedScore, (saved && Number(saved.score) <= 100 ? Number(saved.score) : 0));
 
     // Auto-detect score, rounds, and level changes in real-time
     setInterval(() => {
@@ -484,8 +486,8 @@ function generateStandaloneHTML(manifest: any, cssFile: string, jsFile: string):
         activeRound = parseInt(roundMatch[1], 10);
       }
 
-      // 2. Cumulative Multi-Level Progress across 5 difficulty levels (0..100)
-      const totalLevels = 5;
+      // 2. Cumulative Multi-Level Progress across difficulty levels (0..100)
+      const totalLevels = ${manifest.difficulty ? manifest.difficulty.max : 5};
       const completedLevels = Math.max(0, activeLevel - 1);
       const cumulativeProgressPct = Math.min(100, Math.round(((completedLevels + Math.min(1, inLevelRatio)) / totalLevels) * 100));
 
