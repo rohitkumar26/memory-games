@@ -188,6 +188,7 @@ export default {
     if (!this.api || !this.container) return;
 
     this.currentLevel = level || 1;
+    this.currentRound = 1;
     const safeTheme = (theme && THEMES[theme as keyof typeof THEMES]) ? (theme as keyof typeof THEMES) : (this.currentTheme && THEMES[this.currentTheme] ? this.currentTheme : 'pets');
     this.currentTheme = safeTheme;
 

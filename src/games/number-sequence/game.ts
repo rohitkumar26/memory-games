@@ -186,6 +186,7 @@ export default {
     if (!this.api || !this.container) return;
 
     this.currentLevel = level || 1;
+    this.currentRound = 1;
     this.currentMode = (mode === 'forward' || mode === 'reverse') ? mode : (this.currentMode || 'forward');
     this.container.innerHTML = '';
     this.isComputerTurn = false;

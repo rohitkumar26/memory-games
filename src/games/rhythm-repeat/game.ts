@@ -271,6 +271,7 @@ export default {
     if (!this.api || !this.container) return;
 
     this.currentLevel = level || 1;
+    this.currentRound = 1;
     this.currentThemeIdx = (typeof themeIdx === 'number' && INSTRUMENT_THEMES[themeIdx]) ? themeIdx : (this.currentThemeIdx || 0);
 
     this.container.innerHTML = '';

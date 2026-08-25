@@ -279,6 +279,7 @@ export default {
     if (!this.api || !this.container) return;
 
     this.currentLevel = level || 1;
+    this.currentRound = 1;
     this.currentStoreIdx = (typeof storeIdx === 'number' && STORE_THEMES[storeIdx]) ? storeIdx : (this.currentStoreIdx || 0);
 
     this.container.innerHTML = '';

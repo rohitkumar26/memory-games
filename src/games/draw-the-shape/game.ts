@@ -288,6 +288,7 @@ export default {
 
     this.currentLevel = level || 1;
     this.currentShapeIdx = (typeof shapeIdx === 'number' && SHAPES[shapeIdx]) ? shapeIdx : (this.currentShapeIdx || 0);
+    this.currentRound = 1;
 
     this.container.innerHTML = '';
     this.isDrawing = false;
