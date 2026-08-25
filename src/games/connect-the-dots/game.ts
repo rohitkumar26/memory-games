@@ -135,11 +135,8 @@ export default {
 
   start(level?: number): void {
     this.isPlaying = true;
-    if (typeof level === 'number') {
-      const idx = (level > 0 && level <= SHAPE_PRESETS.length) ? level - 1 : level;
-      this.currentShapeIdx = (idx >= 0 && idx < SHAPE_PRESETS.length) ? idx : 0;
-    }
-    this.startGame(this.currentShapeIdx);
+    const targetLevel = (typeof level === 'number' && level >= 1 && level <= SHAPE_PRESETS.length) ? level : 1;
+    this.startGame(targetLevel);
   },
 
   pause(): void {
@@ -212,6 +209,7 @@ export default {
 
       this.api.onTap(btn, () => {
         this.currentShapeIdx = idx;
+        this.currentLevel = idx + 1;
         this.api?.playSound('click');
         this.buildMenu();
       });
@@ -230,19 +228,26 @@ export default {
     startBtn.textContent = '🎮 Start Connecting!';
     this.api.onTap(startBtn, () => {
       this.api?.playSound('click');
-      this.startGame(this.currentShapeIdx);
+      this.startGame(this.currentLevel || (this.currentShapeIdx + 1));
     });
     menu.appendChild(startBtn);
 
     this.container.appendChild(menu);
   },
 
-  startGame(levelOrShapeIdx?: number): void {
+  startGame(level?: number): void {
     if (!this.api || !this.container) return;
 
-    const idx = typeof levelOrShapeIdx === 'number' ? (levelOrShapeIdx > 0 && levelOrShapeIdx <= SHAPE_PRESETS.length ? levelOrShapeIdx - 1 : levelOrShapeIdx) : (this.currentShapeIdx || 0);
-    this.currentShapeIdx = (idx >= 0 && idx < SHAPE_PRESETS.length) ? idx : 0;
-    this.currentLevel = this.currentShapeIdx + 1;
+    if (typeof level === 'number' && level >= 1 && level <= SHAPE_PRESETS.length) {
+      this.currentLevel = level;
+      this.currentShapeIdx = level - 1;
+    } else if (typeof level === 'number' && level >= 0 && level < SHAPE_PRESETS.length) {
+      this.currentShapeIdx = level;
+      this.currentLevel = level + 1;
+    } else {
+      this.currentLevel = (this.currentShapeIdx || 0) + 1;
+      this.currentShapeIdx = this.currentLevel - 1;
+    }
 
     this.container.innerHTML = '';
     this.nextDotNum = 1;
@@ -552,8 +557,8 @@ export default {
       this.api?.playSound('click');
       overlay.remove();
       this.currentModal = null;
-      this.currentShapeIdx = (this.currentShapeIdx + 1) % SHAPE_PRESETS.length;
-      this.startGame(this.currentShapeIdx);
+      const nextLevel = (this.currentLevel % SHAPE_PRESETS.length) + 1;
+      this.startGame(nextLevel);
     });
     btnCol.appendChild(nextBtn);
 
@@ -568,7 +573,7 @@ export default {
       this.api?.playSound('click');
       overlay.remove();
       this.currentModal = null;
-      this.startGame(this.currentShapeIdx);
+      this.startGame(this.currentLevel);
     });
     btnRow.appendChild(replayBtn);
 
