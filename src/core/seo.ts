@@ -236,5 +236,20 @@ export const GAME_SEO_REGISTRY: Record<string, GameSEOData> = {
       'Boosts spatial-motor confidence and visual memory reproduction.'
     ],
     keywords: ['draw the shape game kids', 'geometry memory game online', 'shape tracing game preschool', 'visual memory drawing game', 'drawing from memory kids']
+  },
+  'treasure-hunt': {
+    skills: ['Spatial Grid Memory', 'Visual-Spatial Working Memory', 'Target Location Recall', 'Sustained Concentration'],
+    learningObjective: 'Strengthens spatial grid orientation, working memory retention, and mental location mapping by remembering where multiple buried treasures appear across an island grid before they are hidden under sand.',
+    howToPlay: [
+      'Look closely at the island grid when the round starts to spot all shining pirate treasures (coins, gems, chalices, anchors).',
+      'Memorize their exact grid square locations before the countdown timer expires and the tiles are buried under sand.',
+      'Tap each sandy mound (❓) where you remember a treasure was buried to dig it up.',
+      'Uncover all buried treasures with zero misses to achieve the 3-star Treasure Master trophy!'
+    ],
+    parentTips: [
+      'Encourage children to use spatial landmark strategies (e.g., "Top-left corner, center, and bottom-right") to anchor locations in their minds.',
+      'For classroom centers, have pairs take turns verbalizing coordinate clues (e.g., "Row 2, Column 3") to build early cartography and spatial vocabulary.'
+    ],
+    keywords: ['treasure hunt memory game', 'spatial grid recall kids', 'pirate map memory game', 'visual location memory online', 'preschool treasure grid puzzle']
   }
 };
